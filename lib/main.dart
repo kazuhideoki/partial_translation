@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:partial_translation/apis/translate.dart';
+import 'dart:io';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,12 +17,52 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final useState
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
-    final htmlBody = useState('');
     final selectedPart = useState('');
     final translatedPart = useState('');
+    void partialTranslate() async {
+      final text = await webView.getSelectedText();
+      selectedPart.value = text;
+      final translatedData = await GoogleTranslateApi().getApi([text]);
+      print('★translatedDataは $translatedData');
+      if (translatedData != null) {
+        translatedPart.value =
+            translatedData['translations'][0]['translatedText'];
+        print(translatedPart.value);
+      }
+    }
+    final contextMenu = ContextMenu(
+      options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
+        menuItems: [
+          ContextMenuItem(
+              androidId: 1,
+              iosId: "1",
+              title: "Partial Translate",
+              action: () => partialTranslate(),
+              )
+        ],
+        onCreateContextMenu: (hitTestResult) async {
+          print("onCreateContextMenu");
+          print(hitTestResult.extra);
+          print(await webView.getSelectedText());
+        },
+        onHideContextMenu: () {
+          print("onHideContextMenu");
+        },
+        onContextMenuActionItemClicked: (contextMenuItemClicked) {
+          var id = (Platform.isAndroid)
+              ? contextMenuItemClicked.androidId
+              : contextMenuItemClicked.iosId;
+          print("onContextMenuActionItemClicked: " +
+              id.toString() +
+              " " +
+              contextMenuItemClicked.title);
+        });
+
+    
+
+    
 
     return MaterialApp(
       home: Scaffold(
@@ -41,6 +82,7 @@ class MyApp extends HookWidget {
               child: InAppWebView(
                 initialUrl: "https://flutter.dev/",
                 initialHeaders: {},
+                contextMenu: contextMenu,
                 initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
                   debuggingEnabled: true,
@@ -92,17 +134,7 @@ class MyApp extends HookWidget {
               ),
               RaisedButton(
                 child: Icon(Icons.translate),
-                onPressed: () async {
-                  final text = await webView.getSelectedText();
-                  selectedPart.value = text;
-                  final translatedData = await GoogleTranslateApi().getApi([text]);
-                  print('★translatedDataは $translatedData');
-                  if (translatedData != null) {
-
-                  translatedPart.value = translatedData['translations'][0]['translatedText'];
-                  print(translatedPart.value);
-                  }
-                },
+                onPressed: () => partialTranslate(),
               ),
             ],
           ),
