@@ -39,3 +39,7 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+#env&secret file
+.env
+partial-translation-secret.json

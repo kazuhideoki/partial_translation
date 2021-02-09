@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:partial_translation/apis/translate.dart';
+import 'package:translator/translator.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv.load(fileName: '.env');
   runApp(MyApp());
 }
 
@@ -16,12 +20,14 @@ class MyApp extends HookWidget {
     // final useState
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
+    final htmlBody = useState('');
+    final selectedPart = useState('');
+    final translatedPart = useState('');
 
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(
-              "CURRENT URL\n${url.value}"),
+          title: Text("CURRENT URL\n${url.value}"),
         ),
         body: Container(
             child: Column(children: <Widget>[
@@ -53,7 +59,7 @@ class MyApp extends HookWidget {
                 },
                 onProgressChanged:
                     (InAppWebViewController controller, int newProgress) {
-                    progress.value = newProgress / 100;
+                  progress.value = newProgress / 100;
                 },
               ),
             ),
@@ -85,8 +91,21 @@ class MyApp extends HookWidget {
                   }
                 },
               ),
+              RaisedButton(
+                child: Icon(Icons.translate),
+                onPressed: () async {
+                  final text = await webView.getSelectedText();
+                  selectedPart.value = text;
+                  final translatedData =
+                      await GoogleTranslateApi().getApi([text]);
+                  translatedPart.value = translatedData['translations'][0]['translatedText'];
+                },
+              ),
             ],
           ),
+          Container(
+            child: Text('${selectedPart.value}の意味は「${translatedPart.value}」'),
+          )
         ])),
       ),
     );
