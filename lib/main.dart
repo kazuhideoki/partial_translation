@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:partial_translation/apis/translate.dart';
-import 'package:translator/translator.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,9 +95,13 @@ class MyApp extends HookWidget {
                 onPressed: () async {
                   final text = await webView.getSelectedText();
                   selectedPart.value = text;
-                  final translatedData =
-                      await GoogleTranslateApi().getApi([text]);
+                  final translatedData = await GoogleTranslateApi().getApi([text]);
+                  print('★translatedDataは $translatedData');
+                  if (translatedData != null) {
+
                   translatedPart.value = translatedData['translations'][0]['translatedText'];
+                  print(translatedPart.value);
+                  }
                 },
               ),
             ],
