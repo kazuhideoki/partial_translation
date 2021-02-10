@@ -32,19 +32,20 @@ class MyApp extends HookWidget {
         print(translatedPart.value);
       }
     }
+
     final contextMenu = ContextMenu(
-      options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
+        options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
         menuItems: [
           ContextMenuItem(
-              androidId: 1,
-              iosId: "1",
-              title: "Partial Translate",
-              action: () => partialTranslate(),
-              )
+            androidId: 1,
+            iosId: "1",
+            title: "Partial Translate",
+            action: () => partialTranslate(),
+          )
         ],
         onCreateContextMenu: (hitTestResult) async {
           print("onCreateContextMenu");
-          print(hitTestResult.extra);
+          print(hitTestResult);
           print(await webView.getSelectedText());
         },
         onHideContextMenu: () {
@@ -59,10 +60,6 @@ class MyApp extends HookWidget {
               " " +
               contextMenuItemClicked.title);
         });
-
-    
-
-    
 
     return MaterialApp(
       home: Scaffold(
@@ -80,7 +77,7 @@ class MyApp extends HookWidget {
               decoration:
                   BoxDecoration(border: Border.all(color: Colors.blueAccent)),
               child: InAppWebView(
-                initialUrl: "https://flutter.dev/",
+                initialUrl: "https://google.com",
                 initialHeaders: {},
                 contextMenu: contextMenu,
                 initialOptions: InAppWebViewGroupOptions(
@@ -139,6 +136,7 @@ class MyApp extends HookWidget {
             ],
           ),
           Container(
+            margin: EdgeInsets.all(10),
             child: Text('${selectedPart.value}の意味は「${translatedPart.value}」'),
           )
         ])),
