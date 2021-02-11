@@ -21,15 +21,35 @@ class MyApp extends HookWidget {
     final progress = useState(0.1 as double); // 0でうまく出来なかった
     final selectedPart = useState('');
     final translatedPart = useState('');
+    final count = useState(0);
+
     void partialTranslate() async {
       final text = await webView.getSelectedText();
       selectedPart.value = text;
       final translatedData = await GoogleTranslateApi().getApi([text]);
-      print('★translatedDataは $translatedData');
       if (translatedData != null) {
-        translatedPart.value =
-            translatedData['translations'][0]['translatedText'];
+        final result =
+            translatedData['translations'][0]['translatedText'] as String;
+        translatedPart.value = result;
         print(translatedPart.value);
+
+        webView.evaluateJavascript(source: """
+                    const selection${count.value} = document.getSelection()
+
+                    console.log('getSelectionは' + selection${count.value});
+                    console.log('$result');
+                  
+
+                    const textNode${count.value} = document.createTextNode('$result');
+                    const child${count.value} = document.createElement("span").appendChild(textNode${count.value});
+
+                    selection${count.value}.focusNode.after(child${count.value});
+
+                    
+
+
+                  """);
+        count.value++;
       }
     }
 
@@ -37,16 +57,17 @@ class MyApp extends HookWidget {
         options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
         menuItems: [
           ContextMenuItem(
-            androidId: 1,
-            iosId: "1",
-            title: "Partial Translate",
-            action: () => partialTranslate(),
-          )
+              androidId: 1,
+              iosId: "1",
+              // title: translatedPart.value,
+              title: '翻訳',
+              action: () {
+                partialTranslate();
+              })
         ],
         onCreateContextMenu: (hitTestResult) async {
           print("onCreateContextMenu");
-          print(hitTestResult);
-          print(await webView.getSelectedText());
+          print('選択されたテキストは ${await webView.getSelectedText()}');
         },
         onHideContextMenu: () {
           print("onHideContextMenu");
@@ -78,7 +99,6 @@ class MyApp extends HookWidget {
                   BoxDecoration(border: Border.all(color: Colors.blueAccent)),
               child: InAppWebView(
                 initialUrl: "https://google.com",
-                initialHeaders: {},
                 contextMenu: contextMenu,
                 initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
@@ -99,11 +119,16 @@ class MyApp extends HookWidget {
                     (InAppWebViewController controller, int newProgress) {
                   progress.value = newProgress / 100;
                 },
+                onConsoleMessage: (InAppWebViewController controller,
+                    ConsoleMessage consoleMessage) {
+                  print("console message: ${consoleMessage.message}");
+                },
               ),
             ),
           ),
           ButtonBar(
             alignment: MainAxisAlignment.center,
+            buttonMinWidth: 3.0,
             children: <Widget>[
               RaisedButton(
                 child: Icon(Icons.arrow_back),
@@ -132,6 +157,13 @@ class MyApp extends HookWidget {
               RaisedButton(
                 child: Icon(Icons.translate),
                 onPressed: () => partialTranslate(),
+              ),
+              RaisedButton(
+                child: Icon(Icons.remove),
+                onPressed: () {
+                  webView.evaluateJavascript(
+                      source: 'window.getSelection().removeAllRanges();');
+                },
               ),
             ],
           ),
