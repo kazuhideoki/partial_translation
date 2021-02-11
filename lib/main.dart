@@ -43,9 +43,10 @@ class MyApp extends HookWidget {
                     // 選択の直後に翻訳結果を挿入
                     const firstPart$c = focusNodeString$c.substr(0,offSet$c);
                     const secondPart$c = focusNodeString$c.substr(offSet$c);
-                    const newNode$c = firstPart$c + '$result' + secondPart$c;
+
+                    const newNodeString$c = firstPart$c + '<b style="color: red;">$result</b>' + secondPart$c;
              
-                    focusNode$c.parentNode.innerHTML = newNode$c;
+                    focusNode$c.parentNode.innerHTML = newNodeString$c;
 
                   """);
         count.value++;
