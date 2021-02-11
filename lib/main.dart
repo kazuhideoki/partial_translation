@@ -33,20 +33,19 @@ class MyApp extends HookWidget {
         translatedPart.value = result;
         print(translatedPart.value);
 
+        final c = count.value; // 続けて実行した場合、変数名を変えないとエラーになるのでsuffix付与
         webView.evaluateJavascript(source: """
-                    const selection${count.value} = document.getSelection()
+                    const selection$c = document.getSelection()
+                    let focusNode$c = selection$c.focusNode;
+                    const focusNodeString$c = selection$c.focusNode.parentNode.innerHTML;
+                    const offSet$c = Math.max(selection$c.focusOffset, selection$c.anchorOffset);
 
-                    console.log('getSelectionは' + selection${count.value});
-                    console.log('$result');
-                  
-
-                    const textNode${count.value} = document.createTextNode('$result');
-                    const child${count.value} = document.createElement("span").appendChild(textNode${count.value});
-
-                    selection${count.value}.focusNode.after(child${count.value});
-
-                    
-
+                    // 選択の直後に翻訳結果を挿入
+                    const firstPart$c = focusNodeString$c.substr(0,offSet$c);
+                    const secondPart$c = focusNodeString$c.substr(offSet$c);
+                    const newNode$c = firstPart$c + '$result' + secondPart$c;
+             
+                    focusNode$c.parentNode.innerHTML = newNode$c;
 
                   """);
         count.value++;
@@ -67,7 +66,6 @@ class MyApp extends HookWidget {
         ],
         onCreateContextMenu: (hitTestResult) async {
           print("onCreateContextMenu");
-          print('選択されたテキストは ${await webView.getSelectedText()}');
         },
         onHideContextMenu: () {
           print("onHideContextMenu");
@@ -167,10 +165,10 @@ class MyApp extends HookWidget {
               ),
             ],
           ),
-          Container(
-            margin: EdgeInsets.all(10),
-            child: Text('${selectedPart.value}の意味は「${translatedPart.value}」'),
-          )
+          // Container(
+          //   margin: EdgeInsets.all(10),
+          //   child: Text('${selectedPart.value}の意味は「${translatedPart.value}」'),
+          // )
         ])),
       ),
     );
