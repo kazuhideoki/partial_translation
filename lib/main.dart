@@ -33,6 +33,8 @@ class MyApp extends HookWidget {
       count += 0;
       final originalText = await webView.getSelectedText();
       final translatedData = await GoogleTranslateApi().getApi([originalText]);
+
+      
       if (translatedData != null) {
         final translatedText =
             translatedData['translations'][0]['translatedText'] as String;
@@ -44,7 +46,6 @@ class MyApp extends HookWidget {
         await webView.webStorage.localStorage
             .setItem(key: 'ptData$count', value: value);
 
-        print(await webView.webStorage.localStorage.getItem(key: 'ptData0'));
 
         await webView.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/replaceText.js');
