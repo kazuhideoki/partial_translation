@@ -1,19 +1,26 @@
 var c = window.localStorage.getItem("count") || "0";
 var ptData = window.localStorage.getItem(`ptData${c}`);
 console.log("ptDataは" + ptData);
+var originalText = JSON.parse(ptData).originalText;
 var translatedText = JSON.parse(ptData).translatedText;
-console.log("translatedTextは" + translatedText);
 
 var selection = document.getSelection();
 var focusNode = selection.focusNode;
 var focusNodeString = selection.focusNode.parentNode.innerHTML;
-var offSet = Math.max(selection.focusOffset, selection.anchorOffset);
+var offSetMin = Math.min(selection.focusOffset, selection.anchorOffset);
+var offSetMax = Math.max(selection.focusOffset, selection.anchorOffset);
+var range = selection.getRangeAt(0);
 
-// 選択の直後に翻訳結果を挿入
-var firstPart = focusNodeString.substr(0, offSet);
-var secondPart = focusNodeString.substr(offSet);
+console.log(range.toString());
+range.deleteContents();
+console.log(range.toString());
+// 選択の直後に翻訳元テキストと結果を挿入
+var firstPart = focusNodeString.substr(0, offSetMin);
+var lastPart = focusNodeString.substr(offSetMax);
+var originalPart = `<b id="original${c}"style="color: blue">${originalText}</b>`;
+var translatedPart = `<b id="translated${c}"style="color: red;">${translatedText}</b>`;
 
-var newNodeString = `${firstPart}<b style="color: red;">${translatedText}</b>${secondPart}`;
+var newNodeString = firstPart + originalPart + translatedPart + lastPart;
 
 focusNode.parentNode.innerHTML = newNodeString;
 

@@ -3,11 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:partial_translation/apis/translate.dart';
-import 'package:partial_translation/chrome_safari_browser.dart';
 import 'dart:io';
 import 'dart:convert';
+import 'package:partial_translation/apis/translate.dart';
 import 'package:partial_translation/model/pt_data.dart';
+import 'package:partial_translation/footer_button_bar.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +17,6 @@ Future main() async {
 
 class MyApp extends HookWidget {
   InAppWebViewController webView;
-  final ChromeSafariBrowser browser =
-      new MyChromeSafariBrowser(new MyInAppBrowser());
 
   @override
   Widget build(BuildContext context) {
@@ -122,58 +120,8 @@ class MyApp extends HookWidget {
               ),
             ),
           ),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            buttonMinWidth: 2.5,
-            children: <Widget>[
-              RaisedButton(
-                child: Icon(Icons.arrow_back),
-                onPressed: () {
-                  if (webView != null) {
-                    webView.goBack();
-                  }
-                },
-              ),
-              RaisedButton(
-                child: Icon(Icons.arrow_forward),
-                onPressed: () {
-                  if (webView != null) {
-                    webView.goForward();
-                  }
-                },
-              ),
-              RaisedButton(
-                child: Icon(Icons.refresh),
-                onPressed: () {
-                  if (webView != null) {
-                    webView.reload();
-                  }
-                },
-              ),
-              RaisedButton(
-                child: Icon(Icons.translate),
-                onPressed: () => partialTranslate(),
-              ),
-              RaisedButton(
-                child: Icon(Icons.remove),
-                onPressed: () {
-                  webView.evaluateJavascript(
-                      source: 'window.getSelection().removeAllRanges();');
-                },
-              ),
-              RaisedButton(
-                child: Icon(Icons.open_in_browser),
-                onPressed: () async {
-                  await browser.open(
-                      url: url.value,
-                      options: ChromeSafariBrowserClassOptions(
-                          android: AndroidChromeCustomTabsOptions(
-                              addDefaultShareMenuItem: false),
-                          ios: IOSSafariOptions(barCollapsingEnabled: true)));
-                },
-              ),
-            ],
-          ),
+          FooterButtonBar(webView: webView, url: url.value,)
+          
         ])),
       ),
     );
