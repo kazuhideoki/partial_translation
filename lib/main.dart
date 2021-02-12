@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:partial_translation/apis/translate.dart';
+import 'package:partial_translation/chrome_safari_browser.dart';
 import 'dart:io';
+import 'dart:convert';
+import 'package:partial_translation/model/pt_data.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,42 +17,37 @@ Future main() async {
 
 class MyApp extends HookWidget {
   InAppWebViewController webView;
+  final ChromeSafariBrowser browser =
+      new MyChromeSafariBrowser(new MyInAppBrowser());
 
   @override
   Widget build(BuildContext context) {
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
-    final selectedPart = useState('');
-    final translatedPart = useState('');
-    final count = useState(0);
 
     void partialTranslate() async {
-      final text = await webView.getSelectedText();
-      selectedPart.value = text;
-      final translatedData = await GoogleTranslateApi().getApi([text]);
+      var count =
+          await webView.webStorage.localStorage.getItem(key: 'count');
+      if (count == null) {
+        count = '0';
+      }
+      final originalText = await webView.getSelectedText();
+      final translatedData = await GoogleTranslateApi().getApi([originalText]);
       if (translatedData != null) {
-        final result =
+        final translatedText =
             translatedData['translations'][0]['translatedText'] as String;
-        translatedPart.value = result;
-        print(translatedPart.value);
 
-        final c = count.value; // 続けて実行した場合、変数名を変えないとエラーになるのでsuffix付与
-        webView.evaluateJavascript(source: """
-                    const selection$c = document.getSelection()
-                    let focusNode$c = selection$c.focusNode;
-                    const focusNodeString$c = selection$c.focusNode.parentNode.innerHTML;
-                    const offSet$c = Math.max(selection$c.focusOffset, selection$c.anchorOffset);
+        final ptData = PtData(count, originalText, translatedText);
 
-                    // 選択の直後に翻訳結果を挿入
-                    const firstPart$c = focusNodeString$c.substr(0,offSet$c);
-                    const secondPart$c = focusNodeString$c.substr(offSet$c);
+        final value = jsonEncode(ptData);
+        print(value);
+        await webView.webStorage.localStorage
+            .setItem(key: 'ptData$count', value: value);
 
-                    const newNodeString$c = firstPart$c + '<b style="color: red;">$result</b>' + secondPart$c;
-             
-                    focusNode$c.parentNode.innerHTML = newNodeString$c;
+        print(await webView.webStorage.localStorage.getItem(key: 'ptData0'));
 
-                  """);
-        count.value++;
+        await webView.injectJavascriptFileFromAsset(
+            assetFilePath: 'javascript/replaceText.js');
       }
     }
 
@@ -59,7 +57,6 @@ class MyApp extends HookWidget {
           ContextMenuItem(
               androidId: 1,
               iosId: "1",
-              // title: translatedPart.value,
               title: '翻訳',
               action: () {
                 partialTranslate();
@@ -127,7 +124,7 @@ class MyApp extends HookWidget {
           ),
           ButtonBar(
             alignment: MainAxisAlignment.center,
-            buttonMinWidth: 3.0,
+            buttonMinWidth: 2.5,
             children: <Widget>[
               RaisedButton(
                 child: Icon(Icons.arrow_back),
@@ -164,12 +161,19 @@ class MyApp extends HookWidget {
                       source: 'window.getSelection().removeAllRanges();');
                 },
               ),
+              RaisedButton(
+                child: Icon(Icons.open_in_browser),
+                onPressed: () async {
+                  await browser.open(
+                      url: url.value,
+                      options: ChromeSafariBrowserClassOptions(
+                          android: AndroidChromeCustomTabsOptions(
+                              addDefaultShareMenuItem: false),
+                          ios: IOSSafariOptions(barCollapsingEnabled: true)));
+                },
+              ),
             ],
           ),
-          // Container(
-          //   margin: EdgeInsets.all(10),
-          //   child: Text('${selectedPart.value}の意味は「${translatedPart.value}」'),
-          // )
         ])),
       ),
     );
