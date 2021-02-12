@@ -17,8 +17,8 @@ console.log(range.toString());
 // 選択の直後に翻訳元テキストと結果を挿入
 var firstPart = focusNodeString.substr(0, offSetMin);
 var lastPart = focusNodeString.substr(offSetMax);
-var originalPart = `<b id="original${c}"style="color: blue">${originalText}</b>`;
-var translatedPart = `<b id="translated${c}"style="color: red;">${translatedText}</b>`;
+var originalPart = `<b id="original${c} class="modified-by-partial-translate" style="color: blue">${originalText}</b>`;
+var translatedPart = `<b id="translated${c}" class="modified-by-partial-translate" style="color: red;">${translatedText}</b>`;
 
 var newNodeString = firstPart + originalPart + translatedPart + lastPart;
 

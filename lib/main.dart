@@ -20,15 +20,17 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final webViewState = useState(null as InAppWebViewController);
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
     void partialTranslate() async {
-      var count =
-          await webView.webStorage.localStorage.getItem(key: 'count');
+      final webView = webViewState.value;
+      var count = await webView.webStorage.localStorage.getItem(key: 'count');
       if (count == null) {
         count = '0';
       }
+      count += 0;
       final originalText = await webView.getSelectedText();
       final translatedData = await GoogleTranslateApi().getApi([originalText]);
       if (translatedData != null) {
@@ -99,7 +101,7 @@ class MyApp extends HookWidget {
                   debuggingEnabled: true,
                 )),
                 onWebViewCreated: (InAppWebViewController controller) {
-                  webView = controller;
+                  webViewState.value = controller;
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
@@ -120,8 +122,10 @@ class MyApp extends HookWidget {
               ),
             ),
           ),
-          FooterButtonBar(webView: webView, url: url.value,)
-          
+          FooterButtonBar(
+            webView: webViewState.value,
+            url: url.value,
+          )
         ])),
       ),
     );
