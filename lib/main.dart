@@ -33,6 +33,9 @@ class MyApp extends HookWidget {
       }
       // count = int.parse(count);
 
+      await webView.injectJavascriptFileFromAsset(
+            assetFilePath: 'javascript/revisionBeforeTranslate.js');
+
       final originalText = await webView.getSelectedText();
       final translatedData = await GoogleTranslateApi().getApi([originalText]);
 
