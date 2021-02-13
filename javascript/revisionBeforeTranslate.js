@@ -1,3 +1,9 @@
+console.log("★★★◆◆◆revisionBeforeTranslate.js◆◆◆★★★");
+
+var COMMON_CLASS_NAME = "pt-modified";
+var ORIGINAL_CLASS_NAME = "pt-original";
+var TRANSLATED_CLASS_NAME = "pt-translated";
+
 // 選択部分を取得
 var selectedRange = document.getSelection().getRangeAt(0);
 console.log("最初の selectedRangeは " + selectedRange);
@@ -5,18 +11,19 @@ console.log("最初の selectedRangeは " + selectedRange);
 
 //  →originalPartとかぶっている → 以前の結果を削除して新たに翻訳する
 var nodeIdsShouldDeleted = getNodeIdsShouldDeleted(selectedRange);
-var intersectsTranslatedNodeIds = isIntersectsTranslatedNodes(selectedRange);
 
 if (nodeIdsShouldDeleted.length) {
   deleteIntersectedNode(nodeIdsShouldDeleted);
-  // console.log("rangeは " + selectedRange.toString());
-  // selectedRange = document.getSelection().getRangeAt(0);
-  // console.log("rangeは " + selectedRange.toString());
-  // } else if (intersectsTranslatedNodeIds.length) {
-} else if (false) {
-  closeIntersectedNode();
-  selectedRange = document.getSelection().getRangeAt(0);
 }
+
+var nodeIdsShouldCollapse = getNodeIdsShouldCollapse(selectedRange);
+if (nodeIdsShouldCollapse.length) {
+  closeIntersectedNode(nodeIdsShouldCollapse, selectedRange);
+}
+
+// ■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■
 
 function getNodeIdsShouldDeleted(range) {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
@@ -53,6 +60,7 @@ function getNodeIdsShouldDeleted(range) {
     intersectsNodeIds.push(element.parentNode.id);
   });
 
+  // ダブリをなくす
   var setResult = new Set(intersectsNodeIds);
   let result = Array.from(setResult);
 
@@ -92,9 +100,48 @@ function deleteIntersectedNode(ids) {
   });
 }
 
-function isIntersectsTranslatedNodes(params) {
+function getNodeIdsShouldCollapse(range) {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
+
+  var translatedNodes = document.getElementsByClassName(TRANSLATED_CLASS_NAME);
+  console.log("translatedNodes.lengthは " + translatedNodes.length);
+
+  var filteredTranslatedNodes = Array.prototype.filter.call(
+    translatedNodes,
+    (element) => {
+      console.log("(テキスト)" + element.textContent);
+      console.log(element.textContent.length);
+      console.log(element.childNodes[0].length);
+      var offset = element.childNodes[0].length;
+      var result = range.comparePoint(element.childNodes[0], offset);
+      console.log("filteredTranslatedNodesのfilterのresultは " + result);
+      return result === 0;
+    }
+  );
+
+  var intersectsNodeIds = [];
+  filteredTranslatedNodes.forEach((element) => {
+    intersectsNodeIds.push(element.parentNode.id);
+  });
+  console.log(JSON.stringify(intersectsNodeIds));
+
+  return intersectsNodeIds;
 }
-function closeIntersectedNode(params) {
+
+function closeIntersectedNode(ids, range) {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
+
+  var ptNodes = [];
+  ids.forEach(function (id) {
+    ptNodes.push(document.getElementById(id));
+  });
+
+  ptNodes.forEach(function (ptNode) {
+    var translatedNode = ptNode.getElementsByClassName(
+      TRANSLATED_CLASS_NAME
+    )[0];
+
+    translatedNode.style.display = "none";
+    range.setStartAfter(ptNode);
+  });
 }
