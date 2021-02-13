@@ -34,7 +34,7 @@ class MyApp extends HookWidget {
       // count = int.parse(count);
 
       await webView.injectJavascriptFileFromAsset(
-            assetFilePath: 'javascript/revisionBeforeTranslate.js');
+          assetFilePath: 'javascript/revisionBeforeTranslate.js');
 
       final originalText = await webView.getSelectedText();
       final translatedData = await GoogleTranslateApi().getApi([originalText]);
@@ -52,6 +52,8 @@ class MyApp extends HookWidget {
 
         await webView.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/replaceText.js');
+        count++;
+        webView.webStorage.localStorage.setItem(key: 'count', value: count);
       }
     }
 

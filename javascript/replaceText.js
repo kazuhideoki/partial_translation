@@ -1,4 +1,5 @@
 console.log("★★★◆◆◆replaceText.js◆◆◆★★★");
+console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");
 var count = window.localStorage.getItem("count");
 var ptNodeId = `pt_node${count}`;
 var PT_NODE_CLASS_NAME = "pt-node";
@@ -12,12 +13,9 @@ console.log(
   window.getSelection().getRangeAt(0).endContainer.parentNode.innerHTML
 );
 
-// 表示させる翻訳結果のnodeを作る
-var insertingNodes = createInsertingNodes(count);
-// 翻訳結果を挿入
-replaceNode(insertingNodes);
+var insertingNodes = createInsertingNodes(count); // 表示させる翻訳結果のnodeを作る
 
-incrementDataCount(count);
+replaceNode(insertingNodes); // 翻訳結果を挿入
 
 console.log(
   window.getSelection().getRangeAt(0).endContainer.parentNode.innerHTML
@@ -30,10 +28,12 @@ console.log(
 function createInsertingNodes(c) {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
 
+  // ローカルストレージ経由で翻訳データを取得
   var ptData = window.localStorage.getItem(`ptData${c}`);
   var originalText = JSON.parse(ptData).originalText;
   var translatedText = JSON.parse(ptData).translatedText;
 
+  // 元テキスト
   var originalPart = document.createElement("span");
   originalPart.innerHTML = originalText;
   originalPart.id = originalId;
@@ -41,12 +41,14 @@ function createInsertingNodes(c) {
   originalPart.style.color = "blue";
   console.log(originalPart.innerHTML);
 
+  // 翻訳テキスト
   var translatedPart = document.createElement("span");
   translatedPart.innerHTML = translatedText;
   translatedPart.id = translatedId;
   translatedPart.className = COMMON_CLASS_NAME + " " + TRANSLATED_CLASS_NAME;
   translatedPart.style.color = "red";
 
+  // 2つを合わせる
   var insertingNodes = document.createElement("span");
   insertingNodes.id = ptNodeId;
   insertingNodes.className = PT_NODE_CLASS_NAME;
@@ -74,7 +76,4 @@ function replaceNode(node) {
   range.deleteContents();
 }
 
-function incrementDataCount(c) {
-  var newCount = Number(c) + 1;
-  window.localStorage.setItem("count", newCount);
-}
+console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");

@@ -7,16 +7,14 @@ var TRANSLATED_CLASS_NAME = "pt-translated";
 // 選択部分を取得
 var selectedRange = document.getSelection().getRangeAt(0);
 console.log("最初の selectedRangeは " + selectedRange);
-// ★選択部分が以前の結果とかぶっているか判定
 
-//  →originalPartとかぶっている → 以前の結果を削除して新たに翻訳する
-var nodeIdsShouldDeleted = getNodeIdsShouldDeleted(selectedRange);
+var nodeIdsShouldDeleted = getNodeIdsShouldDeleted(selectedRange); //  →originalPartとかぶっている → 以前の結果を削除する
 
 if (nodeIdsShouldDeleted.length) {
   deleteIntersectedNode(nodeIdsShouldDeleted);
 }
 
-var nodeIdsShouldCollapse = getNodeIdsShouldCollapse(selectedRange);
+var nodeIdsShouldCollapse = getNodeIdsShouldCollapse(selectedRange); // translatedPartとかぶっている → 以前の結果を閉じる
 if (nodeIdsShouldCollapse.length) {
   closeIntersectedNode(nodeIdsShouldCollapse, selectedRange);
 }
@@ -35,7 +33,6 @@ function getNodeIdsShouldDeleted(range) {
   console.log(translatedNodes.length);
 
   // ★ここでrangeと比較してかぶっているか調べるところ
-  //
   var filteredOriginalNodes = Array.prototype.filter.call(
     originalNodes,
     (element) => {
