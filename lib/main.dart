@@ -28,13 +28,14 @@ class MyApp extends HookWidget {
       final webView = webViewState.value;
       var count = await webView.webStorage.localStorage.getItem(key: 'count');
       if (count == null) {
-        count = '0';
+        count = 0;
+        webView.webStorage.localStorage.setItem(key: 'count', value: 0);
       }
-      count += 0;
+      // count = int.parse(count);
+
       final originalText = await webView.getSelectedText();
       final translatedData = await GoogleTranslateApi().getApi([originalText]);
 
-      
       if (translatedData != null) {
         final translatedText =
             translatedData['translations'][0]['translatedText'] as String;
@@ -45,7 +46,6 @@ class MyApp extends HookWidget {
         print(value);
         await webView.webStorage.localStorage
             .setItem(key: 'ptData$count', value: value);
-
 
         await webView.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/replaceText.js');

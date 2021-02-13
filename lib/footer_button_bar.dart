@@ -43,12 +43,12 @@ class FooterButtonBar extends StatelessWidget {
             },
           ),
           RaisedButton(
-            child: Icon(Icons.delete_forever),
-            onPressed: () async {
-              await webView.injectJavascriptFileFromAsset(
-                  assetFilePath: 'javascript/removeTranslatedText.js');
-            },
-          ),
+              child: Icon(Icons.show_chart),
+              onPressed: () async {
+                final localStorage =
+                    await webView.webStorage.localStorage.getItems();
+                print(localStorage);
+              }),
           RaisedButton(
             child: Icon(Icons.open_in_browser),
             onPressed: () async {
