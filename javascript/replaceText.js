@@ -1,5 +1,4 @@
 console.log("★★★◆◆◆replaceText.js◆◆◆★★★");
-console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");
 var count = window.localStorage.getItem("count");
 var ptNodeId = `pt_node${count}`;
 var PT_NODE_CLASS_NAME = "pt-node";
@@ -10,7 +9,8 @@ var translatedId = `pt_translated${count}`;
 var TRANSLATED_CLASS_NAME = "pt-translated";
 
 console.log(
-  window.getSelection().getRangeAt(0).endContainer.parentNode.innerHTML
+  window.getSelection().getRangeAt(0).endContainer.parentNode.parentNode
+    .outerHTML
 );
 
 var insertingNodes = createInsertingNodes(count); // 表示させる翻訳結果のnodeを作る
@@ -18,7 +18,7 @@ var insertingNodes = createInsertingNodes(count); // 表示させる翻訳結果
 replaceNode(insertingNodes); // 翻訳結果を挿入
 
 console.log(
-  window.getSelection().getRangeAt(0).endContainer.parentNode.innerHTML
+  window.getSelection().getRangeAt(0).endContainer.parentNode.outerHTML
 );
 
 // ■■■■■■■■■■■■■■■■■■

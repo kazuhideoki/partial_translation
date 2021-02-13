@@ -1,6 +1,6 @@
 console.log("★★★◆◆◆revisionBeforeTranslate.js◆◆◆★★★");
 
-var COMMON_CLASS_NAME = "pt-modified";
+var PT_NODE_CLASS_NAME = "pt-node";
 var ORIGINAL_CLASS_NAME = "pt-original";
 var TRANSLATED_CLASS_NAME = "pt-translated";
 
@@ -25,41 +25,38 @@ if (nodeIdsShouldCollapse.length) {
 
 function getNodeIdsShouldDeleted(range) {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-  var originalNodes = document.getElementsByClassName(ORIGINAL_CLASS_NAME);
-
-  console.log(originalNodes);
-  console.log(originalNodes.length);
-  var translatedNodes = document.getElementsByClassName(TRANSLATED_CLASS_NAME);
-  console.log(translatedNodes.length);
+  var ptNodes = document.getElementsByClassName(PT_NODE_CLASS_NAME);
 
   // ★ここでrangeと比較してかぶっているか調べるところ
-  var filteredOriginalNodes = Array.prototype.filter.call(
-    originalNodes,
-    (element) => {
-      var result = range.comparePoint(element, 0) === 0;
-      console.log("filterの中で " + result);
-      return result;
+  // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+
+  var intersectsNodes = Array.prototype.filter.call(ptNodes, (element) => {
+    console.log("_____" + element.outerHTML);
+    var headPoint = range.comparePoint(element, 0);
+    console.log("headPointは " + headPoint);
+    var target = element.childNodes[1];
+    console.log(target);
+    var headPointOfTranslated = range.comparePoint(target, 0);
+    console.log("headPointOfTranslatedは " + headPointOfTranslated);
+
+    var result;
+    if (headPoint === 0 || headPointOfTranslated === 0) {
+      result = true;
+    } else if (headPoint === -1 || headPointOfTranslated === 1) {
+      result = true;
     }
-  );
-
-  var filteredTranslatedNodes = Array.prototype.filter.call(
-    translatedNodes,
-    (element) => {
-      return range.comparePoint(element, 0) === 0;
-    }
-  );
-
-  var intersectsNodes = [...filteredOriginalNodes, ...filteredTranslatedNodes];
-  console.log(JSON.stringify(intersectsNodes));
-
-  var intersectsNodeIds = [];
-  intersectsNodes.forEach((element) => {
-    intersectsNodeIds.push(element.parentNode.id);
+    console.log("filterの中で " + result);
+    return result;
   });
 
-  // ダブリをなくす
-  var setResult = new Set(intersectsNodeIds);
-  let result = Array.from(setResult);
+  // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+
+  console.log(JSON.stringify(intersectsNodes));
+
+  var result = [];
+  intersectsNodes.forEach((element) => {
+    result.push(element.id);
+  });
 
   console.log("returnは " + JSON.stringify(result));
 
@@ -141,4 +138,25 @@ function closeIntersectedNode(ids, range) {
     translatedNode.style.display = "none";
     range.setStartAfter(ptNode);
   });
+}
+
+console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");
+{
+  /* <span id="pt_node408" class="pt-node">
+  <span
+    id="pt_original408"
+    class="pt-modified pt-original"
+    style="color: blue;"
+  >
+    articles organized from thousands of publishers and magazines. Google News
+    is available{" "}
+  </span>
+  <span
+    id="pt_translated408"
+    class="pt-modified pt-translated"
+    style="color: red;"
+  >
+    何千もの出版社や雑誌から組織された記事。 Googleニュースが利用可能です
+  </span>
+</span>; */
 }
