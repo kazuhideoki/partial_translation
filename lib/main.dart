@@ -26,29 +26,38 @@ class MyApp extends HookWidget {
 
     void partialTranslate() async {
       final webView = webViewState.value;
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/revisionBeforeTranslate.js');
+
+      TargetData targetData;
+      try {
+        await webView.injectJavascriptFileFromAsset(
+            assetFilePath: 'javascript/revisionBeforeTranslate.js');
+
+        // final targetDataJson =
+        //     await webView.webStorage.localStorage.getItem(key: 'targetData');
+        // targetData = TargetData.fromJson(targetDataJson);
+      } catch (e) {
+        print('mainのcatch error');
+        // targetData = TargetData(await webView.getSelectedText(), true);
+      }
+
+      // if (targetData.isTranslating == false) return null;
+
+      // final targetText = await webView.evaluateJavascript(
+      //     source: "document.getElementById('translating_target').innerHTML");
+      final targetText = await webView.getSelectedText();
+
+      final translatedData = await GoogleTranslateApi().getApi([targetText]);
+      if (translatedData == null) return null;
+
+      final translatedText =
+          translatedData['translations'][0]['translatedText'] as String;
 
       var count = await webView.webStorage.localStorage.getItem(key: 'count');
       if (count == null) {
         count = 0;
         webView.webStorage.localStorage.setItem(key: 'count', value: 0);
       }
-      final targetDataJson =
-          await webView.webStorage.localStorage.getItem(key: 'targetData');
-      final targetData = TargetData.fromJson(targetDataJson);
-
-      if (targetData.isTranslating == false) return null;
-
-      final translatedData =
-          await GoogleTranslateApi().getApi([targetData.targetText]);
-
-      if (translatedData == null) return null;
-
-      final translatedText =
-            translatedData['translations'][0]['translatedText'] as String;
-
-      final ptData = PtData(count, targetData.targetText, translatedText);
+      final ptData = PtData(count, targetText, translatedText);
 
       final value = jsonEncode(ptData);
       print(value);

@@ -1,152 +1,64 @@
 console.log("★★★◆◆◆revisionBeforeTranslate.js◆◆◆★★★");
-
+var TRANSLATING_TARGET = "translating_target";
 var PT_NODE_CLASS_NAME = "pt-node";
 var ORIGINAL_CLASS_NAME = "pt-original";
 var TRANSLATED_CLASS_NAME = "pt-translated";
 
-// 選択部分を取得
-var selectedRange = document.getSelection().getRangeAt(0);
-console.log("最初の selectedRangeは " + selectedRange);
-
-var nodeIdsShouldDeleted = getNodeIdsShouldDeleted(selectedRange); //  →originalPartとかぶっている → 以前の結果を削除する
-
-if (nodeIdsShouldDeleted.length) {
-  deleteIntersectedNode(nodeIdsShouldDeleted);
+try {
+  modifyPtNodes(); //  →originalPartとかぶっている → 以前の結果を削除する
+} catch (err) {
+  console.log("■エラーは " + err);
 }
 
-var nodeIdsShouldCollapse = getNodeIdsShouldCollapse(selectedRange); // translatedPartとかぶっている → 以前の結果を閉じる
-if (nodeIdsShouldCollapse.length) {
-  closeIntersectedNode(nodeIdsShouldCollapse, selectedRange);
-}
-
-saveTargetData(selectedRange); // 'targetDataへデータを格納'
-
 // ■■■■■■■■■■■■■■■■■■
 // ■■■■■■■■■■■■■■■■■■
 // ■■■■■■■■■■■■■■■■■■
 
-function getNodeIdsShouldDeleted(range) {
+function modifyPtNodes() {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-  var ptNodes = document.getElementsByClassName(PT_NODE_CLASS_NAME);
+  var range = document.getSelection().getRangeAt(0);
+  const ptNodes = document.getElementsByClassName(PT_NODE_CLASS_NAME);
 
-  // ★ここでrangeと比較してかぶっているか調べるところ
-  // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+  const targetText = range.toString();
 
-  var intersectsNodes = Array.prototype.filter.call(ptNodes, (element) => {
-    console.log("_____" + element.outerHTML);
-    var headPoint = range.comparePoint(element, 0);
-    console.log("headPointは " + headPoint);
-    var target = element.childNodes[1];
-    console.log(target);
-    var headPointOfTranslated = range.comparePoint(target, 0);
-    console.log("headPointOfTranslatedは " + headPointOfTranslated);
+  if (ptNodes.length) {
+    Array.prototype.forEach.call(ptNodes, function (ptNode) {
+      const originalNode = ptNode.childNodes[0];
+      console.log("originalNodeは " + originalNode);
+      const translatedNode = ptNode.childNodes[1];
 
-    var result;
-    if (headPoint === 0 || headPointOfTranslated === 0) {
-      result = true;
-    } else if (headPoint === -1 || headPointOfTranslated === 1) {
-      result = true;
+      const headPoint = range.comparePoint(originalNode, 0);
+      console.log("headPoint " + headPoint);
+      const interPoint = range.comparePoint(translatedNode, 0);
+      console.log("interPoint " + interPoint);
+      const tailPoint = range.comparePoint(
+        translatedNode.childNodes[0],
+        translatedNode.textContent.length
+      );
+      console.log("tailPoint " + tailPoint);
+
+      if (headPoint === 0 && interPoint === 1) {
+        rangeOnLeft(ptNode, originalNode, translatedNode);
+      } else if (headPoint === 0 && interPoint === 0 && tailPoint === 1) {
+      } else if (headPoint === 0 && interPoint === 0 && tailPoint === 0) {
+      } else if (headPoint === -1 && interPoint === 1) {
+      } else if (headPoint === -1 && interPoint === 0 && tailPoint === 1) {
+      } else if (headPoint === -1 && interPoint === 0 && tailPoint === 0) {
+      } else if (headPoint === -1 && interPoint === -1 && tailPoint === 1) {
+      } else if (headPoint === -1 && interPoint === -1 && tailPoint === 0) {
+      }
+    });
+
+    function rangeOnLeft(ptNode, originalNode, translatedNode) {
+      console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
+      const originalTextNode = document.createTextNode(
+        originalNode.textContent
+      );
+      ptNode.parentNode.insertBefore(originalTextNode, ptNode);
+
+      ptNode.parentNode.removeChild(ptNode);
     }
-    console.log("filterの中で " + result);
-    return result;
-  });
-
-  // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-
-  console.log(JSON.stringify(intersectsNodes));
-
-  var result = [];
-  intersectsNodes.forEach((element) => {
-    result.push(element.id);
-  });
-
-  console.log("returnは " + JSON.stringify(result));
-
-  return result;
+  }
 }
 
-function deleteIntersectedNode(ids) {
-  console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-
-  var ptNodes = [];
-  ids.forEach(function (id) {
-    ptNodes.push(document.getElementById(id));
-  });
-
-  console.log(JSON.stringify(ptNodes));
-
-  ptNodes.forEach(function (ptNode) {
-    console.log("ptNodeは" + ptNode);
-    // translatedNodeは削除
-    var translatedNode = ptNode.getElementsByClassName(
-      TRANSLATED_CLASS_NAME
-    )[0];
-    ptNode.removeChild(translatedNode);
-
-    // originalNode の前にtextContentをつけてから削除
-    var originalNode = ptNode.getElementsByClassName(ORIGINAL_CLASS_NAME)[0];
-    var textContent = originalNode.textContent;
-    var textNode = document.createTextNode(textContent);
-    console.log("textNode.textContentは " + textNode.textContent);
-    console.log(ptNode.parentNode.innerHTML);
-
-    ptNode.parentNode.insertBefore(textNode, ptNode);
-    console.log(ptNode.parentNode.innerHTML);
-    ptNode.parentNode.removeChild(ptNode);
-  });
-}
-
-function getNodeIdsShouldCollapse(range) {
-  console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-
-  var translatedNodes = document.getElementsByClassName(TRANSLATED_CLASS_NAME);
-  console.log("translatedNodes.lengthは " + translatedNodes.length);
-
-  var filteredTranslatedNodes = Array.prototype.filter.call(
-    translatedNodes,
-    (element) => {
-      console.log("(テキスト)" + element.textContent);
-      console.log(element.textContent.length);
-      console.log(element.childNodes[0].length);
-      var offset = element.childNodes[0].length;
-      var result = range.comparePoint(element.childNodes[0], offset);
-      console.log("filteredTranslatedNodesのfilterのresultは " + result);
-      return result === 0;
-    }
-  );
-
-  var intersectsNodeIds = [];
-  filteredTranslatedNodes.forEach((element) => {
-    intersectsNodeIds.push(element.parentNode.id);
-  });
-  console.log(JSON.stringify(intersectsNodeIds));
-
-  return intersectsNodeIds;
-}
-
-function closeIntersectedNode(ids, range) {
-  console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-
-  var ptNodes = [];
-  ids.forEach(function (id) {
-    ptNodes.push(document.getElementById(id));
-  });
-
-  ptNodes.forEach(function (ptNode) {
-    var translatedNode = ptNode.getElementsByClassName(
-      TRANSLATED_CLASS_NAME
-    )[0];
-
-    translatedNode.style.display = "none";
-    range.setStartAfter(ptNode);
-  });
-}
-
-function saveTargetData(range) {
-  var targetData = {
-    targetText: range.toString(),
-    isTranslating: !range.collapsed,
-  };
-  window.localStorage.setItem("targetData", JSON.stringify(targetData));
-}
 console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");
