@@ -19,6 +19,8 @@ if (nodeIdsShouldCollapse.length) {
   closeIntersectedNode(nodeIdsShouldCollapse, selectedRange);
 }
 
+saveTargetData(selectedRange); // 'targetDataへデータを格納'
+
 // ■■■■■■■■■■■■■■■■■■
 // ■■■■■■■■■■■■■■■■■■
 // ■■■■■■■■■■■■■■■■■■
@@ -140,23 +142,11 @@ function closeIntersectedNode(ids, range) {
   });
 }
 
-console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");
-{
-  /* <span id="pt_node408" class="pt-node">
-  <span
-    id="pt_original408"
-    class="pt-modified pt-original"
-    style="color: blue;"
-  >
-    articles organized from thousands of publishers and magazines. Google News
-    is available{" "}
-  </span>
-  <span
-    id="pt_translated408"
-    class="pt-modified pt-translated"
-    style="color: red;"
-  >
-    何千もの出版社や雑誌から組織された記事。 Googleニュースが利用可能です
-  </span>
-</span>; */
+function saveTargetData(range) {
+  var targetData = {
+    targetText: range.toString(),
+    isTranslating: !range.collapsed,
+  };
+  window.localStorage.setItem("targetData", JSON.stringify(targetData));
 }
+console.log("★★★◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆★★★");

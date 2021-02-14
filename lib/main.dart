@@ -26,35 +26,40 @@ class MyApp extends HookWidget {
 
     void partialTranslate() async {
       final webView = webViewState.value;
+      await webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/revisionBeforeTranslate.js');
+
       var count = await webView.webStorage.localStorage.getItem(key: 'count');
       if (count == null) {
         count = 0;
         webView.webStorage.localStorage.setItem(key: 'count', value: 0);
       }
-      // count = int.parse(count);
+      final targetDataJson =
+          await webView.webStorage.localStorage.getItem(key: 'targetData');
+      final targetData = TargetData.fromJson(targetDataJson);
 
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/revisionBeforeTranslate.js');
+      if (targetData.isTranslating == false) return null;
 
-      final originalText = await webView.getSelectedText();
-      final translatedData = await GoogleTranslateApi().getApi([originalText]);
+      final translatedData =
+          await GoogleTranslateApi().getApi([targetData.targetText]);
 
-      if (translatedData != null) {
-        final translatedText =
+      if (translatedData == null) return null;
+
+      final translatedText =
             translatedData['translations'][0]['translatedText'] as String;
 
-        final ptData = PtData(count, originalText, translatedText);
+      final ptData = PtData(count, targetData.targetText, translatedText);
 
-        final value = jsonEncode(ptData);
-        print(value);
-        await webView.webStorage.localStorage
-            .setItem(key: 'ptData$count', value: value);
+      final value = jsonEncode(ptData);
+      print(value);
+      await webView.webStorage.localStorage
+          .setItem(key: 'ptData$count', value: value);
 
-        await webView.injectJavascriptFileFromAsset(
-            assetFilePath: 'javascript/replaceText.js');
-        count++;
-        webView.webStorage.localStorage.setItem(key: 'count', value: count);
-      }
+      await webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/replaceText.js');
+
+      count++;
+      webView.webStorage.localStorage.setItem(key: 'count', value: count);
     }
 
     final contextMenu = ContextMenu(

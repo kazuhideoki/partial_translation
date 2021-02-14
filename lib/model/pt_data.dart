@@ -16,3 +16,19 @@ class PtData {
         'translatedText': translatedText,
       };
 }
+
+class TargetData {
+  final String targetText;
+  final bool isTranslating;
+
+  TargetData(this.targetText, this.isTranslating);
+
+  TargetData.fromJson(Map<String, dynamic> json)
+      : targetText = json['targetText'],
+        isTranslating = json['isTranslating'];
+
+  Map<String, dynamic> toJson() => {
+        'targetText': targetText,
+        'isTranslating': isTranslating,
+      };
+}

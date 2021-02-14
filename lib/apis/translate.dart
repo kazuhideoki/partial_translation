@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:googleapis_auth/auth_io.dart';
 
 class GoogleTranslateApi {
-  Future getApi(List<String> words) async {
+  Future getApi(List<String> texts) async {
     final projectId = env['PROJECT_ID'];
     final dio = new Dio();
     final url =
@@ -31,7 +31,7 @@ class GoogleTranslateApi {
             data: {
               "sourceLanguageCode": "en",
               "targetLanguageCode": "ja",
-              "contents": words,
+              "contents": texts,
             });
         print('responseは $response');
         return response.data;
