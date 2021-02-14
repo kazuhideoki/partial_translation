@@ -30,7 +30,7 @@ class MyApp extends HookWidget {
       TargetData targetData;
       try {
         await webView.injectJavascriptFileFromAsset(
-            assetFilePath: 'javascript/revisionBeforeTranslate.js');
+            assetFilePath: 'javascript/modigyDomBeforeTranslate.js');
 
         // final targetDataJson =
         //     await webView.webStorage.localStorage.getItem(key: 'targetData');

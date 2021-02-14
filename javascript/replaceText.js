@@ -8,18 +8,9 @@ var ORIGINAL_CLASS_NAME = "pt-original";
 var translatedId = `pt_translated${count}`;
 var TRANSLATED_CLASS_NAME = "pt-translated";
 
-console.log(
-  window.getSelection().getRangeAt(0).endContainer.parentNode.parentNode
-    .outerHTML
-);
-
 var insertingNodes = createInsertingNodes(count); // 表示させる翻訳結果のnodeを作る
 
 replaceNode(insertingNodes); // 翻訳結果を挿入
-
-console.log(
-  window.getSelection().getRangeAt(0).endContainer.parentNode.outerHTML
-);
 
 // ■■■■■■■■■■■■■■■■■■
 // ■■■■■■■■■■■■■■■■■■
