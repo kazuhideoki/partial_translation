@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/net/connect_local_storage.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:partial_translation/apis/translate.dart';
+import 'package:partial_translation/net/translate.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/view_model/app_state.dart';
@@ -29,9 +30,10 @@ class MyApp extends HookWidget {
 
     void partialTranslate() async {
       print('partialTranslateのwebViewは $webView');
+      final localStorage = ConnectLocalStorage(webView);
 
       await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/modigyDomBeforeTranslate.js');
+          assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
 
       final targetText = await webView.getSelectedText();
 
@@ -41,11 +43,12 @@ class MyApp extends HookWidget {
       final translatedText =
           translatedData['translations'][0]['translatedText'] as String;
 
-      var count = await webView.webStorage.localStorage.getItem(key: 'count');
+      var count = await localStorage.getCount();
       if (count == null) {
         count = 0;
-        webView.webStorage.localStorage.setItem(key: 'count', value: 0);
+        localStorage.setCount(0);
       }
+  
       final ptData = PtData(count, targetText, translatedText);
 
       final value = jsonEncode(ptData);

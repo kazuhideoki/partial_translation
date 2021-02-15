@@ -1,4 +1,4 @@
-console.log("★★★◆◆◆modigyDomBeforeTranslate.js◆◆◆★★★");
+console.log("★★★◆◆◆modifyDomBeforeTranslate.js◆◆◆★★★");
 var count = window.localStorage.getItem("count");
 var translatingNodeId = `pt_translating_id${count}`;
 var TRANSLATING_TARGET = "translating_target";
