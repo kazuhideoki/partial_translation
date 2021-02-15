@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:partial_translation/apis/translate.dart';
@@ -12,7 +13,7 @@ import 'package:partial_translation/footer_button_bar.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv.load(fileName: '.env');
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends HookWidget {
@@ -20,13 +21,13 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final webViewState = useState(null as InAppWebViewController);
+    print('main build');
     final searchBarUrl = useState('');
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
     void partialTranslate() async {
-      final webView = webViewState.value;
+      print('partialTranslateのwebViewは $webView');
 
       await webView.injectJavascriptFileFromAsset(
           assetFilePath: 'javascript/modigyDomBeforeTranslate.js');
@@ -93,21 +94,20 @@ class MyApp extends HookWidget {
               searchBarUrl.value = text;
             },
             onSubmitted: (text) {
-              webViewState.value
-                  .loadUrl(url: 'https://google.com/search?q=$text'); // うごかん
+              webView.loadUrl(
+                  url: 'https://google.com/search?q=$text'); // うごかん
             },
             style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
-              hintText: "Search",
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-              suffixIcon: Icon(
-                Icons.close,
-                color: Colors.white,
-              )
-            ),
+                hintText: "Search",
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                suffixIcon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                )),
           ),
         ),
         body: Container(
@@ -128,7 +128,7 @@ class MyApp extends HookWidget {
                   debuggingEnabled: true,
                 )),
                 onWebViewCreated: (InAppWebViewController controller) {
-                  webViewState.value = controller;
+                  webView = controller;
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
@@ -150,7 +150,6 @@ class MyApp extends HookWidget {
             ),
           ),
           FooterButtonBar(
-            webView: webViewState.value,
             url: url.value,
           )
         ])),

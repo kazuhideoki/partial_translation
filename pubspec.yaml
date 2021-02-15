@@ -25,6 +25,9 @@ dependencies:
     sdk: flutter
   flutter_inappwebview: 4.0.0+4
   flutter_hooks: ^0.14.0
+  hooks_riverpod: 0.12.4
+  flutter_state_notifier:
+  provider:
   flutter_dotenv: 3.1.0
   dio:
   translator: 0.1.5

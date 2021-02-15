@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/chrome_safari_browser.dart';
+import 'package:partial_translation/view_model/app_state_view_model.dart';
 
-class FooterButtonBar extends StatelessWidget {
-  FooterButtonBar({Key key, this.webView, this.url}) : super(key: key);
+class FooterButtonBar extends HookWidget {
+  FooterButtonBar({Key key, this.url}) : super(key: key);
 
-  InAppWebViewController webView;
   String url;
 
   final ChromeSafariBrowser browser =
@@ -13,6 +15,8 @@ class FooterButtonBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final webViewController =
+        useProvider(appStateProvider.state).webViewController;
     return Container(
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
@@ -21,24 +25,24 @@ class FooterButtonBar extends StatelessWidget {
           RaisedButton(
             child: Icon(Icons.arrow_back),
             onPressed: () {
-              if (webView != null) {
-                webView.goBack();
+              if (webViewController != null) {
+                webViewController.goBack();
               }
             },
           ),
           RaisedButton(
             child: Icon(Icons.arrow_forward),
             onPressed: () {
-              if (webView != null) {
-                webView.goForward();
+              if (webViewController != null) {
+                webViewController.goForward();
               }
             },
           ),
           RaisedButton(
             child: Icon(Icons.refresh),
             onPressed: () {
-              if (webView != null) {
-                webView.reload();
+              if (webViewController != null) {
+                webViewController.reload();
               }
             },
           ),
@@ -46,7 +50,7 @@ class FooterButtonBar extends StatelessWidget {
               child: Icon(Icons.show_chart),
               onPressed: () async {
                 final localStorage =
-                    await webView.webStorage.localStorage.getItems();
+                    await webViewController.webStorage.localStorage.getItems();
                 print(localStorage);
               }),
           RaisedButton(
