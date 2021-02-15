@@ -21,29 +21,16 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webViewState = useState(null as InAppWebViewController);
+    final searchBarUrl = useState('');
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
     void partialTranslate() async {
       final webView = webViewState.value;
 
-      TargetData targetData;
-      try {
-        await webView.injectJavascriptFileFromAsset(
-            assetFilePath: 'javascript/modigyDomBeforeTranslate.js');
+      await webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/modigyDomBeforeTranslate.js');
 
-        // final targetDataJson =
-        //     await webView.webStorage.localStorage.getItem(key: 'targetData');
-        // targetData = TargetData.fromJson(targetDataJson);
-      } catch (e) {
-        print('mainのcatch error');
-        // targetData = TargetData(await webView.getSelectedText(), true);
-      }
-
-      // if (targetData.isTranslating == false) return null;
-
-      // final targetText = await webView.evaluateJavascript(
-      //     source: "document.getElementById('translating_target').innerHTML");
       final targetText = await webView.getSelectedText();
 
       final translatedData = await GoogleTranslateApi().getApi([targetText]);
@@ -101,7 +88,27 @@ class MyApp extends HookWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text("CURRENT URL\n${url.value}"),
+          title: TextField(
+            onChanged: (text) {
+              searchBarUrl.value = text;
+            },
+            onSubmitted: (text) {
+              webViewState.value
+                  .loadUrl(url: 'https://google.com/search?q=$text'); // うごかん
+            },
+            style: TextStyle(fontSize: 18),
+            decoration: InputDecoration(
+              hintText: "Search",
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+              suffixIcon: Icon(
+                Icons.close,
+                color: Colors.white,
+              )
+            ),
+          ),
         ),
         body: Container(
             child: Column(children: <Widget>[
