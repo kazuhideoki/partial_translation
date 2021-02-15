@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:partial_translation/apis/translate.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
+import 'package:partial_translation/view_model/app_state.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,8 +95,7 @@ class MyApp extends HookWidget {
               searchBarUrl.value = text;
             },
             onSubmitted: (text) {
-              webView.loadUrl(
-                  url: 'https://google.com/search?q=$text'); // うごかん
+              webView.loadUrl(url: 'https://google.com/search?q=$text'); // うごかん
             },
             style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
@@ -150,6 +150,7 @@ class MyApp extends HookWidget {
             ),
           ),
           FooterButtonBar(
+            webView: webView,
             url: url.value,
           )
         ])),

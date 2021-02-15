@@ -3,11 +3,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/chrome_safari_browser.dart';
-import 'package:partial_translation/view_model/app_state_view_model.dart';
+import 'package:partial_translation/view_model/app_state.dart';
 
 class FooterButtonBar extends HookWidget {
-  FooterButtonBar({Key key, this.url}) : super(key: key);
+  FooterButtonBar({Key key, this.url, this.webView}) : super(key: key);
 
+  InAppWebViewController webView;
   String url;
 
   final ChromeSafariBrowser browser =
@@ -15,8 +16,7 @@ class FooterButtonBar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final webViewController =
-        useProvider(appStateProvider.state).webViewController;
+    final incrementCount = useProvider(appStateProvider).incrementCount;
     return Container(
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
@@ -25,24 +25,24 @@ class FooterButtonBar extends HookWidget {
           RaisedButton(
             child: Icon(Icons.arrow_back),
             onPressed: () {
-              if (webViewController != null) {
-                webViewController.goBack();
+              if (webView != null) {
+                webView.goBack();
               }
             },
           ),
           RaisedButton(
             child: Icon(Icons.arrow_forward),
             onPressed: () {
-              if (webViewController != null) {
-                webViewController.goForward();
+              if (webView != null) {
+                webView.goForward();
               }
             },
           ),
           RaisedButton(
             child: Icon(Icons.refresh),
             onPressed: () {
-              if (webViewController != null) {
-                webViewController.reload();
+              if (webView != null) {
+                webView.reload();
               }
             },
           ),
@@ -50,7 +50,7 @@ class FooterButtonBar extends HookWidget {
               child: Icon(Icons.show_chart),
               onPressed: () async {
                 final localStorage =
-                    await webViewController.webStorage.localStorage.getItems();
+                    await webView.webStorage.localStorage.getItems();
                 print(localStorage);
               }),
           RaisedButton(
