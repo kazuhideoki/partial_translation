@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:partial_translation/net/translate.dart';
+import 'package:partial_translation/net/translate_api.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/view_model/app_state.dart';
@@ -23,14 +23,15 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('main build');
     final searchBarUrl = useState('');
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
+    final getCount = useProvider(appStateProvider).getCount;
+    final setCount = useProvider(appStateProvider).setCount;
+
     void partialTranslate() async {
       print('partialTranslateのwebViewは $webView');
-      final localStorage = ConnectLocalStorage(webView);
 
       await webView.injectJavascriptFileFromAsset(
           assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
@@ -43,12 +44,8 @@ class MyApp extends HookWidget {
       final translatedText =
           translatedData['translations'][0]['translatedText'] as String;
 
-      var count = await localStorage.getCount();
-      if (count == null) {
-        count = 0;
-        localStorage.setCount(0);
-      }
-  
+      var count = await getCount(webView);
+
       final ptData = PtData(count, targetText, translatedText);
 
       final value = jsonEncode(ptData);
@@ -60,7 +57,7 @@ class MyApp extends HookWidget {
           assetFilePath: 'javascript/replaceText.js');
 
       count++;
-      webView.webStorage.localStorage.setItem(key: 'count', value: count);
+      setCount(webView, count);
     }
 
     final contextMenu = ContextMenu(
@@ -98,7 +95,8 @@ class MyApp extends HookWidget {
               searchBarUrl.value = text;
             },
             onSubmitted: (text) {
-              webView.loadUrl(url: 'https://google.com/search?q=$text'); // うごかん
+              webView.loadUrl(
+                  url: 'https://google.com/search?q=$text'); //  よくおちる
             },
             style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
@@ -130,7 +128,7 @@ class MyApp extends HookWidget {
                     crossPlatform: InAppWebViewOptions(
                   debuggingEnabled: true,
                 )),
-                onWebViewCreated: (InAppWebViewController controller) {
+                onWebViewCreated: (InAppWebViewController controller) async {
                   webView = controller;
                 },
                 onLoadStart:
