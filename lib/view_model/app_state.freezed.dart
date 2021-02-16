@@ -17,9 +17,10 @@ class _$AppStateTearOff {
   const _$AppStateTearOff();
 
 // ignore: unused_element
-  _AppState call({int count = 0}) {
+  _AppState call({int count = 0, bool longTapToTranslate = false}) {
     return _AppState(
       count: count,
+      longTapToTranslate: longTapToTranslate,
     );
   }
 
@@ -36,6 +37,7 @@ const $AppState = _$AppStateTearOff();
 /// @nodoc
 mixin _$AppState {
   int get count;
+  bool get longTapToTranslate;
 
   Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
@@ -46,7 +48,7 @@ mixin _$AppState {
 abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res>;
-  $Res call({int count});
+  $Res call({int count, bool longTapToTranslate});
 }
 
 /// @nodoc
@@ -60,9 +62,13 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
   @override
   $Res call({
     Object count = freezed,
+    Object longTapToTranslate = freezed,
   }) {
     return _then(_value.copyWith(
       count: count == freezed ? _value.count : count as int,
+      longTapToTranslate: longTapToTranslate == freezed
+          ? _value.longTapToTranslate
+          : longTapToTranslate as bool,
     ));
   }
 }
@@ -72,7 +78,7 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) then) =
       __$AppStateCopyWithImpl<$Res>;
   @override
-  $Res call({int count});
+  $Res call({int count, bool longTapToTranslate});
 }
 
 /// @nodoc
@@ -87,9 +93,13 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object count = freezed,
+    Object longTapToTranslate = freezed,
   }) {
     return _then(_AppState(
       count: count == freezed ? _value.count : count as int,
+      longTapToTranslate: longTapToTranslate == freezed
+          ? _value.longTapToTranslate
+          : longTapToTranslate as bool,
     ));
   }
 }
@@ -98,7 +108,9 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_AppState with DiagnosticableTreeMixin implements _AppState {
-  const _$_AppState({this.count = 0}) : assert(count != null);
+  const _$_AppState({this.count = 0, this.longTapToTranslate = false})
+      : assert(count != null),
+        assert(longTapToTranslate != null);
 
   factory _$_AppState.fromJson(Map<String, dynamic> json) =>
       _$_$_AppStateFromJson(json);
@@ -106,10 +118,13 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @JsonKey(defaultValue: 0)
   @override
   final int count;
+  @JsonKey(defaultValue: false)
+  @override
+  final bool longTapToTranslate;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(count: $count)';
+    return 'AppState(count: $count, longTapToTranslate: $longTapToTranslate)';
   }
 
   @override
@@ -117,7 +132,8 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'AppState'))
-      ..add(DiagnosticsProperty('count', count));
+      ..add(DiagnosticsProperty('count', count))
+      ..add(DiagnosticsProperty('longTapToTranslate', longTapToTranslate));
   }
 
   @override
@@ -125,12 +141,17 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
     return identical(this, other) ||
         (other is _AppState &&
             (identical(other.count, count) ||
-                const DeepCollectionEquality().equals(other.count, count)));
+                const DeepCollectionEquality().equals(other.count, count)) &&
+            (identical(other.longTapToTranslate, longTapToTranslate) ||
+                const DeepCollectionEquality()
+                    .equals(other.longTapToTranslate, longTapToTranslate)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(count);
+      runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(count) ^
+      const DeepCollectionEquality().hash(longTapToTranslate);
 
   @JsonKey(ignore: true)
   @override
@@ -144,12 +165,14 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 }
 
 abstract class _AppState implements AppState {
-  const factory _AppState({int count}) = _$_AppState;
+  const factory _AppState({int count, bool longTapToTranslate}) = _$_AppState;
 
   factory _AppState.fromJson(Map<String, dynamic> json) = _$_AppState.fromJson;
 
   @override
   int get count;
+  @override
+  bool get longTapToTranslate;
   @override
   @JsonKey(ignore: true)
   _$AppStateCopyWith<_AppState> get copyWith;

@@ -6,17 +6,21 @@ import 'package:partial_translation/chrome_safari_browser.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
 class FooterButtonBar extends HookWidget {
-  FooterButtonBar({Key key, this.url, this.webView}) : super(key: key);
+  FooterButtonBar({Key key, this.url, this.webView, this.partialTranslate}) : super(key: key);
 
   InAppWebViewController webView;
   String url;
+  Function partialTranslate;
 
   final ChromeSafariBrowser browser =
       new MyChromeSafariBrowser(new MyInAppBrowser());
 
   @override
   Widget build(BuildContext context) {
-    final incrementCount = useProvider(appStateProvider).incrementCount;
+    final longTapToTranslate =
+        useProvider(appStateProvider.state).longTapToTranslate;
+    final switchLongTapToTranslate =
+        useProvider(appStateProvider).switchLongTapToTranslate;
     return Container(
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
@@ -62,6 +66,13 @@ class FooterButtonBar extends HookWidget {
                       android: AndroidChromeCustomTabsOptions(
                           addDefaultShareMenuItem: false),
                       ios: IOSSafariOptions(barCollapsingEnabled: true)));
+            },
+          ),
+          RaisedButton(
+            child: Icon(Icons.touch_app),
+            color: longTapToTranslate ? Colors.orangeAccent : Colors.grey,
+            onPressed: () {
+              switchLongTapToTranslate(webView, partialTranslate);
             },
           ),
         ],

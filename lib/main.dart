@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/common/context_menu.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -29,6 +30,8 @@ class MyApp extends HookWidget {
 
     final getCount = useProvider(appStateProvider).getCount;
     final setCount = useProvider(appStateProvider).setCount;
+    final longTapToTranslate =
+        useProvider(appStateProvider.state).longTapToTranslate;
 
     void partialTranslate() async {
       print('partialTranslateのwebViewは $webView');
@@ -60,6 +63,7 @@ class MyApp extends HookWidget {
       setCount(webView, count);
     }
 
+    // 一度まとめてクラスに書き変えてみたが動作が不安定だったため戻した
     final contextMenu = ContextMenu(
         options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
         menuItems: [
@@ -129,14 +133,22 @@ class MyApp extends HookWidget {
                   debuggingEnabled: true,
                 )),
                 onWebViewCreated: (InAppWebViewController controller) async {
+                  print('onWebViewCreated');
                   webView = controller;
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
+                  print('onLoadStart');
                   url.value = newUrl;
                 },
                 onLoadStop:
                     (InAppWebViewController controller, String newUrl) async {
+                  print('onLoadStop');
+                  if (longTapToTranslate == true) {
+                    controller.injectJavascriptFileFromAsset(
+                      assetFilePath: 'javascript/longTapToTranslateHandler.js');
+                  }
+
                   url.value = newUrl;
                 },
                 onProgressChanged:
@@ -153,6 +165,7 @@ class MyApp extends HookWidget {
           FooterButtonBar(
             webView: webView,
             url: url.value,
+            partialTranslate: partialTranslate,
           )
         ])),
       ),
