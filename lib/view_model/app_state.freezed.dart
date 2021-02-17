@@ -17,10 +17,14 @@ class _$AppStateTearOff {
   const _$AppStateTearOff();
 
 // ignore: unused_element
-  _AppState call({int count = 0, bool longTapToTranslate = false}) {
+  _AppState call(
+      {int count = 0,
+      bool longTapToTranslate = false,
+      bool selectParagraph = false}) {
     return _AppState(
       count: count,
       longTapToTranslate: longTapToTranslate,
+      selectParagraph: selectParagraph,
     );
   }
 
@@ -38,6 +42,7 @@ const $AppState = _$AppStateTearOff();
 mixin _$AppState {
   int get count;
   bool get longTapToTranslate;
+  bool get selectParagraph;
 
   Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
@@ -48,7 +53,7 @@ mixin _$AppState {
 abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res>;
-  $Res call({int count, bool longTapToTranslate});
+  $Res call({int count, bool longTapToTranslate, bool selectParagraph});
 }
 
 /// @nodoc
@@ -63,12 +68,16 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
   $Res call({
     Object count = freezed,
     Object longTapToTranslate = freezed,
+    Object selectParagraph = freezed,
   }) {
     return _then(_value.copyWith(
       count: count == freezed ? _value.count : count as int,
       longTapToTranslate: longTapToTranslate == freezed
           ? _value.longTapToTranslate
           : longTapToTranslate as bool,
+      selectParagraph: selectParagraph == freezed
+          ? _value.selectParagraph
+          : selectParagraph as bool,
     ));
   }
 }
@@ -78,7 +87,7 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) then) =
       __$AppStateCopyWithImpl<$Res>;
   @override
-  $Res call({int count, bool longTapToTranslate});
+  $Res call({int count, bool longTapToTranslate, bool selectParagraph});
 }
 
 /// @nodoc
@@ -94,12 +103,16 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
   $Res call({
     Object count = freezed,
     Object longTapToTranslate = freezed,
+    Object selectParagraph = freezed,
   }) {
     return _then(_AppState(
       count: count == freezed ? _value.count : count as int,
       longTapToTranslate: longTapToTranslate == freezed
           ? _value.longTapToTranslate
           : longTapToTranslate as bool,
+      selectParagraph: selectParagraph == freezed
+          ? _value.selectParagraph
+          : selectParagraph as bool,
     ));
   }
 }
@@ -108,9 +121,13 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
 
 /// @nodoc
 class _$_AppState with DiagnosticableTreeMixin implements _AppState {
-  const _$_AppState({this.count = 0, this.longTapToTranslate = false})
+  const _$_AppState(
+      {this.count = 0,
+      this.longTapToTranslate = false,
+      this.selectParagraph = false})
       : assert(count != null),
-        assert(longTapToTranslate != null);
+        assert(longTapToTranslate != null),
+        assert(selectParagraph != null);
 
   factory _$_AppState.fromJson(Map<String, dynamic> json) =>
       _$_$_AppStateFromJson(json);
@@ -121,10 +138,13 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @JsonKey(defaultValue: false)
   @override
   final bool longTapToTranslate;
+  @JsonKey(defaultValue: false)
+  @override
+  final bool selectParagraph;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(count: $count, longTapToTranslate: $longTapToTranslate)';
+    return 'AppState(count: $count, longTapToTranslate: $longTapToTranslate, selectParagraph: $selectParagraph)';
   }
 
   @override
@@ -133,7 +153,8 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
     properties
       ..add(DiagnosticsProperty('type', 'AppState'))
       ..add(DiagnosticsProperty('count', count))
-      ..add(DiagnosticsProperty('longTapToTranslate', longTapToTranslate));
+      ..add(DiagnosticsProperty('longTapToTranslate', longTapToTranslate))
+      ..add(DiagnosticsProperty('selectParagraph', selectParagraph));
   }
 
   @override
@@ -144,14 +165,18 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
                 const DeepCollectionEquality().equals(other.count, count)) &&
             (identical(other.longTapToTranslate, longTapToTranslate) ||
                 const DeepCollectionEquality()
-                    .equals(other.longTapToTranslate, longTapToTranslate)));
+                    .equals(other.longTapToTranslate, longTapToTranslate)) &&
+            (identical(other.selectParagraph, selectParagraph) ||
+                const DeepCollectionEquality()
+                    .equals(other.selectParagraph, selectParagraph)));
   }
 
   @override
   int get hashCode =>
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(count) ^
-      const DeepCollectionEquality().hash(longTapToTranslate);
+      const DeepCollectionEquality().hash(longTapToTranslate) ^
+      const DeepCollectionEquality().hash(selectParagraph);
 
   @JsonKey(ignore: true)
   @override
@@ -165,7 +190,8 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 }
 
 abstract class _AppState implements AppState {
-  const factory _AppState({int count, bool longTapToTranslate}) = _$_AppState;
+  const factory _AppState(
+      {int count, bool longTapToTranslate, bool selectParagraph}) = _$_AppState;
 
   factory _AppState.fromJson(Map<String, dynamic> json) = _$_AppState.fromJson;
 
@@ -173,6 +199,8 @@ abstract class _AppState implements AppState {
   int get count;
   @override
   bool get longTapToTranslate;
+  @override
+  bool get selectParagraph;
   @override
   @JsonKey(ignore: true)
   _$AppStateCopyWith<_AppState> get copyWith;

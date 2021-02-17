@@ -21,6 +21,10 @@ class FooterButtonBar extends HookWidget {
         useProvider(appStateProvider.state).longTapToTranslate;
     final switchLongTapToTranslate =
         useProvider(appStateProvider).switchLongTapToTranslate;
+    final selectParagraph =
+        useProvider(appStateProvider.state).selectParagraph;
+    final switchSelectParagraph =
+        useProvider(appStateProvider).switchSelectParagraph;
     return Container(
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
@@ -68,11 +72,18 @@ class FooterButtonBar extends HookWidget {
                       ios: IOSSafariOptions(barCollapsingEnabled: true)));
             },
           ),
+          // RaisedButton(
+          //   child: Icon(Icons.touch_app),
+          //   color: longTapToTranslate ? Colors.orangeAccent : Colors.grey,
+          //   onPressed: () {
+          //     switchLongTapToTranslate(webView, partialTranslate);
+          //   },
+          // ),
           RaisedButton(
-            child: Icon(Icons.touch_app),
-            color: longTapToTranslate ? Colors.orangeAccent : Colors.grey,
+            child: Icon(Icons.article),
+            color: selectParagraph ? Colors.orangeAccent : Colors.grey,
             onPressed: () {
-              switchLongTapToTranslate(webView, partialTranslate);
+              switchSelectParagraph(webView);
             },
           ),
         ],

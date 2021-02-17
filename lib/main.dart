@@ -32,6 +32,8 @@ class MyApp extends HookWidget {
     final setCount = useProvider(appStateProvider).setCount;
     final longTapToTranslate =
         useProvider(appStateProvider.state).longTapToTranslate;
+    final selectParagraph =
+        useProvider(appStateProvider.state).selectParagraph;
 
     void partialTranslate() async {
       print('partialTranslateのwebViewは $webView');
@@ -148,6 +150,11 @@ class MyApp extends HookWidget {
                     controller.injectJavascriptFileFromAsset(
                       assetFilePath: 'javascript/longTapToTranslateHandler.js');
                   }
+                  if (selectParagraph == true) {
+                    controller.injectJavascriptFileFromAsset(
+                      assetFilePath: 'javascript/select_paragraph.js');
+                  }
+                  
 
                   url.value = newUrl;
                 },

@@ -13,6 +13,7 @@ abstract class AppState with _$AppState {
   const factory AppState({
     @Default(0) int count,
     @Default(false) bool longTapToTranslate,
+    @Default(false) bool selectParagraph,
   }) = _AppState;
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -70,6 +71,20 @@ class AppStateNotifier extends StateNotifier<AppState> {
       webView.removeJavaScriptHandler(handlerName: 'translateByLongTap');
     }
     state = state.copyWith(longTapToTranslate: !state.longTapToTranslate);
+  }
+  void switchSelectParagraph(
+      InAppWebViewController webView) {
+    print('switchLongTapToTranslate');
+    if (state.selectParagraph == false) {
+      webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/select_paragraph.js');
+    } else {
+      webView.evaluateJavascript(source: '''
+        console.log('evaluateJavascript: selectParagraph');
+        document.removeEventListener("touchstart", selectParagraph);
+      ''');
+    }
+    state = state.copyWith(selectParagraph: !state.selectParagraph);
   }
 }
 
