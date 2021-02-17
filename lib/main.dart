@@ -24,7 +24,9 @@ class MyApp extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchBarUrl = useState('');
+    // final searchBarUrl = useState('');
+    final searchBarTextEdittingController = useState(TextEditingController());
+    final searchBarForcusNode = useState(FocusNode());
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
@@ -97,9 +99,8 @@ class MyApp extends HookWidget {
       home: Scaffold(
         appBar: AppBar(
           title: TextField(
-            onChanged: (text) {
-              searchBarUrl.value = text;
-            },
+            controller: searchBarTextEdittingController.value,
+            focusNode: searchBarForcusNode.value,
             onSubmitted: (text) {
               webView.loadUrl(
                   url: 'https://google.com/search?q=$text'); //  よくおちる
@@ -111,10 +112,15 @@ class MyApp extends HookWidget {
                   Icons.search,
                   color: Colors.white,
                 ),
-                suffixIcon: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                )),
+                suffixIcon: searchBarForcusNode.value.hasFocus
+                    ? FlatButton(
+                        onPressed: () =>
+                            searchBarTextEdittingController.value.text = '',
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ))
+                    : null),
           ),
         ),
         body: Container(
@@ -130,18 +136,19 @@ class MyApp extends HookWidget {
               child: InAppWebView(
                 initialUrl: "https://google.com",
                 contextMenu: contextMenu,
-
                 initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
                   debuggingEnabled: false,
                 )),
-
                 onWebViewCreated: (InAppWebViewController controller) async {
                   print('onWebViewCreated');
                   webView = controller;
 
-                  // ※ 個々でローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+                  // 右クリックができないページに出くわしたときに試す
+                  controller.injectJavascriptFileFromAsset(
+                      assetFilePath: 'javascript/enableContextMenu.js');
 
+                  // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
