@@ -20,4 +20,11 @@ class ConnectLocalStorage {
   Future<void> setCount(int value) async {
     await _setItem('count', value);
   }
+  Future getIsSelectParagraph() async {
+    return await _getItem('isSelectParagraph');
+  }
+
+  Future<void> setIsSelectParagraph(bool value) async {
+    await _setItem('isSelectParagraph', value);
+  }
 }

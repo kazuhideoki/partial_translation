@@ -12,8 +12,8 @@ part 'app_state.g.dart';
 abstract class AppState with _$AppState {
   const factory AppState({
     @Default(0) int count,
-    @Default(false) bool longTapToTranslate,
-    @Default(false) bool selectParagraph,
+    @Default(false) bool isLongTapToTranslate,
+    @Default(false) bool isSelectParagraph,
   }) = _AppState;
   factory AppState.fromJson(Map<String, dynamic> json) =>
       _$AppStateFromJson(json);
@@ -54,7 +54,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   void switchLongTapToTranslate(
       InAppWebViewController webView, Function translate) {
     print('switchLongTapToTranslate');
-    if (state.longTapToTranslate == false) {
+    if (state.isLongTapToTranslate == false) {
       webView.addJavaScriptHandler(
           handlerName: 'translateByLongTap',
           callback: (arg) {
@@ -70,21 +70,23 @@ class AppStateNotifier extends StateNotifier<AppState> {
       ''');
       webView.removeJavaScriptHandler(handlerName: 'translateByLongTap');
     }
-    state = state.copyWith(longTapToTranslate: !state.longTapToTranslate);
+    state = state.copyWith(isLongTapToTranslate: !state.isLongTapToTranslate);
   }
-  void switchSelectParagraph(
-      InAppWebViewController webView) {
+
+  Future<void> switchSelectParagraph(InAppWebViewController webView) async{
     print('switchLongTapToTranslate');
-    if (state.selectParagraph == false) {
-      webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/select_paragraph.js');
+    if (state.isSelectParagraph == false) {
+      // webView.injectJavascriptFileFromAsset(
+      //     assetFilePath: 'javascript/select_paragraph.js');
+      await ConnectLocalStorage(webView).setIsSelectParagraph(true);
     } else {
-      webView.evaluateJavascript(source: '''
-        console.log('evaluateJavascript: selectParagraph');
-        document.removeEventListener("touchstart", selectParagraph);
-      ''');
+      // webView.evaluateJavascript(source: '''
+      //   console.log('evaluateJavascript: selectParagraph');
+      //   document.removeEventListener("touchstart", selectParagraph, true);
+      // ''');
+      await ConnectLocalStorage(webView).setIsSelectParagraph(false);
     }
-    state = state.copyWith(selectParagraph: !state.selectParagraph);
+    state = state.copyWith(isSelectParagraph: !state.isSelectParagraph);
   }
 }
 

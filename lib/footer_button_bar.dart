@@ -17,12 +17,12 @@ class FooterButtonBar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final longTapToTranslate =
-        useProvider(appStateProvider.state).longTapToTranslate;
+    final isLongTapToTranslate =
+        useProvider(appStateProvider.state).isLongTapToTranslate;
     final switchLongTapToTranslate =
         useProvider(appStateProvider).switchLongTapToTranslate;
-    final selectParagraph =
-        useProvider(appStateProvider.state).selectParagraph;
+    final isSelectParagraph =
+        useProvider(appStateProvider.state).isSelectParagraph;
     final switchSelectParagraph =
         useProvider(appStateProvider).switchSelectParagraph;
     return Container(
@@ -74,14 +74,14 @@ class FooterButtonBar extends HookWidget {
           ),
           // RaisedButton(
           //   child: Icon(Icons.touch_app),
-          //   color: longTapToTranslate ? Colors.orangeAccent : Colors.grey,
+          //   color: isLongTapToTranslate ? Colors.orangeAccent : Colors.grey,
           //   onPressed: () {
           //     switchLongTapToTranslate(webView, partialTranslate);
           //   },
           // ),
           RaisedButton(
             child: Icon(Icons.article),
-            color: selectParagraph ? Colors.orangeAccent : Colors.grey,
+            color: isSelectParagraph ? Colors.orangeAccent : Colors.grey,
             onPressed: () {
               switchSelectParagraph(webView);
             },
