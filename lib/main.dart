@@ -130,13 +130,18 @@ class MyApp extends HookWidget {
               child: InAppWebView(
                 initialUrl: "https://google.com",
                 contextMenu: contextMenu,
+
                 initialOptions: InAppWebViewGroupOptions(
                     crossPlatform: InAppWebViewOptions(
-                  debuggingEnabled: true,
+                  debuggingEnabled: false,
                 )),
+
                 onWebViewCreated: (InAppWebViewController controller) async {
                   print('onWebViewCreated');
                   webView = controller;
+
+                  // ※ 個々でローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
@@ -148,13 +153,11 @@ class MyApp extends HookWidget {
                   print('onLoadStop');
                   if (isLongTapToTranslate == true) {
                     controller.injectJavascriptFileFromAsset(
-                      assetFilePath: 'javascript/longTapToTranslateHandler.js');
+                        assetFilePath:
+                            'javascript/longTapToTranslateHandler.js');
                   }
-                  // if (isSelectParagraph == true) {
-                    controller.injectJavascriptFileFromAsset(
+                  controller.injectJavascriptFileFromAsset(
                       assetFilePath: 'javascript/select_paragraph.js');
-                  // }
-                  
 
                   url.value = newUrl;
                 },

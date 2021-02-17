@@ -60,6 +60,9 @@ class FooterButtonBar extends HookWidget {
                 final localStorage =
                     await webView.webStorage.localStorage.getItems();
                 print(localStorage);
+                // final localStorage2 =
+                //     await webView.webStorage.localStorage.getItem(key: 'isSelectParagraph');
+                // print(localStorage2);
               }),
           RaisedButton(
             child: Icon(Icons.open_in_browser),

@@ -20,7 +20,7 @@ abstract class AppState with _$AppState {
 }
 
 class AppStateNotifier extends StateNotifier<AppState> {
-  AppStateNotifier() : super(AppState(count: 0));
+  AppStateNotifier() : super(AppState());
 
   void incrementCount() {
     state = state.copyWith(count: state.count + 1);
