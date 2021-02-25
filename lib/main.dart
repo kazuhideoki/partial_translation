@@ -12,6 +12,7 @@ import 'package:partial_translation/net/translate_api.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/view_model/app_state.dart';
+import 'package:flutter/services.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -149,6 +150,18 @@ class MyApp extends HookWidget {
                       assetFilePath: 'javascript/enableContextMenu.js');
 
                   // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+
+                  String textData = await Clipboard.getData('text/plain')
+                      .then((value) => value.text);
+                  final regExp =
+                      RegExp(r"https?://[\w!?/+\-_~;.,*&@#$%()'[\]]+");
+                  final texts = textData.split(' ');
+                  final urls = texts.where((text) => text.contains(regExp)).toList();
+                  if (urls.length != 0) {
+                    print('urls.contains(regExp)!!!');
+
+                    controller.loadUrl(url: urls[0]);
+                  }
                 },
                 onLoadStart:
                     (InAppWebViewController controller, String newUrl) {
