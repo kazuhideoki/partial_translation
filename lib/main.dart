@@ -21,11 +21,22 @@ Future main() async {
 
 class MyApp extends HookWidget {
   InAppWebViewController webView;
-
   @override
   Widget build(BuildContext context) {
-    final searchBarTextEdittingController = useState(TextEditingController());
-    final searchBarForcusNode = useState(FocusNode());
+    final _controller = useTextEditingController();
+
+    final _focusNode = useFocusNode();
+    final _isFocused = useState(false);
+    void _handleFocusChange() {
+      if (_focusNode.hasFocus != _isFocused) {
+        _isFocused.value = _focusNode.hasFocus;
+      }
+    }
+
+    _focusNode.addListener(_handleFocusChange);
+
+    print(_focusNode);
+    print(_focusNode.hasFocus);
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
@@ -98,22 +109,23 @@ class MyApp extends HookWidget {
       home: Scaffold(
         appBar: AppBar(
           title: TextField(
-            controller: searchBarTextEdittingController.value,
-            focusNode: searchBarForcusNode.value,
+            controller: _controller,
+            focusNode: _focusNode,
+            onTap: () => _focusNode.requestFocus(),
             onSubmitted: (rawText) {
               searchOnGoogle(rawText, webView);
             },
             style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
-                hintText: "Search",
+                hintText: _isFocused.value ? null : "Search",
                 prefixIcon: Icon(
                   Icons.search,
                   color: Colors.white,
                 ),
-                suffixIcon: searchBarForcusNode.value.hasFocus
+                suffixIcon: _isFocused.value == true
                     ? FlatButton(
                         onPressed: () =>
-                            searchBarTextEdittingController.value.text = '',
+                            _controller.text = '',
                         child: Icon(
                           Icons.close,
                           color: Colors.white,
