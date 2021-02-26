@@ -124,8 +124,7 @@ class MyApp extends HookWidget {
                 ),
                 suffixIcon: _isFocused.value == true
                     ? FlatButton(
-                        onPressed: () =>
-                            _controller.text = '',
+                        onPressed: () => _controller.text = '',
                         child: Icon(
                           Icons.close,
                           color: Colors.white,
@@ -161,7 +160,10 @@ class MyApp extends HookWidget {
 
                     // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
-                    loadUrlFromClipBoadBySnackBar(context, controller);
+                    final urls = await extractUrlsFromClipBoard();
+                    if (urls.length != 0) {
+                      showSnackBarJumpUrl(context, controller, urls);
+                    }
                   },
                   onLoadStart:
                       (InAppWebViewController controller, String newUrl) {
