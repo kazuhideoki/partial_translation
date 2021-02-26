@@ -5,13 +5,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/common/context_menu.dart';
-import 'package:partial_translation/load_url_from_clipboard.dart';
+import 'package:partial_translation/util/load_url_from_clipboard.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:partial_translation/net/translate_api.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
+import 'package:partial_translation/util/search_on_google.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 import 'package:flutter/services.dart';
 
@@ -112,9 +113,8 @@ class MyApp extends HookWidget {
           title: TextField(
             controller: searchBarTextEdittingController.value,
             focusNode: searchBarForcusNode.value,
-            onSubmitted: (text) {
-              webView.loadUrl(
-                  url: 'https://google.com/search?q=$text'); //  よくおちる
+            onSubmitted: (rawText) {
+              searchOnGoogle(rawText, webView);
             },
             style: TextStyle(fontSize: 18),
             decoration: InputDecoration(
