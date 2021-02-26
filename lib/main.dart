@@ -1,20 +1,17 @@
+import 'dart:io';
 import 'dart:async';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:partial_translation/common/context_menu.dart';
 import 'package:partial_translation/util/load_url_from_clipboard.dart';
-import 'package:partial_translation/net/connect_local_storage.dart';
-import 'dart:io';
-import 'dart:convert';
 import 'package:partial_translation/net/translate_api.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/util/search_on_google.dart';
 import 'package:partial_translation/view_model/app_state.dart';
-import 'package:flutter/services.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,21 +19,11 @@ Future main() async {
   runApp(ProviderScope(child: MyApp()));
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//   }
-// }
-
 class MyApp extends HookWidget {
   InAppWebViewController webView;
 
   @override
   Widget build(BuildContext context) {
-    // final searchBarUrl = useState('');
     final searchBarTextEdittingController = useState(TextEditingController());
     final searchBarForcusNode = useState(FocusNode());
     final url = useState('');
@@ -156,7 +143,7 @@ class MyApp extends HookWidget {
                     print('onWebViewCreated');
                     webView = controller;
 
-                    // 右クリックができないページに出くわしたときに試す
+                    // 右クリック有効可
                     controller.injectJavascriptFileFromAsset(
                         assetFilePath: 'javascript/enableContextMenu.js');
 
