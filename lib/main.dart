@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/common/context_menu.dart';
+import 'package:partial_translation/load_url_from_clipboard.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -19,6 +20,15 @@ Future main() async {
   await DotEnv.load(fileName: '.env');
   runApp(ProviderScope(child: MyApp()));
 }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//   }
+// }
 
 class MyApp extends HookWidget {
   InAppWebViewController webView;
@@ -124,80 +134,72 @@ class MyApp extends HookWidget {
                     : null),
           ),
         ),
-        body: Container(
-            child: Column(children: <Widget>[
-          Container(
-              child: progress.value < 1.0
-                  ? LinearProgressIndicator(value: progress.value)
-                  : Container()),
-          Expanded(
-            child: Container(
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-              child: InAppWebView(
-                initialUrl: "https://google.com",
-                contextMenu: contextMenu,
-                initialOptions: InAppWebViewGroupOptions(
-                    crossPlatform: InAppWebViewOptions(
-                  debuggingEnabled: false,
-                )),
-                onWebViewCreated: (InAppWebViewController controller) async {
-                  print('onWebViewCreated');
-                  webView = controller;
+        body: Builder(builder: (BuildContext context) {
+          return Container(
+              child: Column(children: <Widget>[
+            Container(
+                child: progress.value < 1.0
+                    ? LinearProgressIndicator(value: progress.value)
+                    : Container()),
+            Expanded(
+              child: Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                child: InAppWebView(
+                  initialUrl: "https://google.com",
+                  contextMenu: contextMenu,
+                  initialOptions: InAppWebViewGroupOptions(
+                      crossPlatform: InAppWebViewOptions(
+                    debuggingEnabled: false,
+                  )),
+                  onWebViewCreated: (InAppWebViewController controller) async {
+                    print('onWebViewCreated');
+                    webView = controller;
 
-                  // 右クリックができないページに出くわしたときに試す
-                  controller.injectJavascriptFileFromAsset(
-                      assetFilePath: 'javascript/enableContextMenu.js');
-
-                  // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
-
-                  String textData = await Clipboard.getData('text/plain')
-                      .then((value) => value.text);
-                  final regExp =
-                      RegExp(r"https?://[\w!?/+\-_~;.,*&@#$%()'[\]]+");
-                  final texts = textData.split(' ');
-                  final urls = texts.where((text) => text.contains(regExp)).toList();
-                  if (urls.length != 0) {
-                    print('urls.contains(regExp)!!!');
-
-                    controller.loadUrl(url: urls[0]);
-                  }
-                },
-                onLoadStart:
-                    (InAppWebViewController controller, String newUrl) {
-                  print('onLoadStart');
-                  url.value = newUrl;
-                },
-                onLoadStop:
-                    (InAppWebViewController controller, String newUrl) async {
-                  print('onLoadStop');
-                  if (isLongTapToTranslate == true) {
+                    // 右クリックができないページに出くわしたときに試す
                     controller.injectJavascriptFileFromAsset(
-                        assetFilePath:
-                            'javascript/longTapToTranslateHandler.js');
-                  }
-                  controller.injectJavascriptFileFromAsset(
-                      assetFilePath: 'javascript/select_paragraph.js');
+                        assetFilePath: 'javascript/enableContextMenu.js');
 
-                  url.value = newUrl;
-                },
-                onProgressChanged:
-                    (InAppWebViewController controller, int newProgress) {
-                  progress.value = newProgress / 100;
-                },
-                onConsoleMessage: (InAppWebViewController controller,
-                    ConsoleMessage consoleMessage) {
-                  print("console message: ${consoleMessage.message}");
-                },
+                    // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+
+                    loadUrlFromClipBoadBySnackBar(context, controller);
+                  },
+                  onLoadStart:
+                      (InAppWebViewController controller, String newUrl) {
+                    print('onLoadStart');
+                    url.value = newUrl;
+                  },
+                  onLoadStop:
+                      (InAppWebViewController controller, String newUrl) async {
+                    print('onLoadStop');
+                    if (isLongTapToTranslate == true) {
+                      controller.injectJavascriptFileFromAsset(
+                          assetFilePath:
+                              'javascript/longTapToTranslateHandler.js');
+                    }
+                    controller.injectJavascriptFileFromAsset(
+                        assetFilePath: 'javascript/select_paragraph.js');
+
+                    url.value = newUrl;
+                  },
+                  onProgressChanged:
+                      (InAppWebViewController controller, int newProgress) {
+                    progress.value = newProgress / 100;
+                  },
+                  onConsoleMessage: (InAppWebViewController controller,
+                      ConsoleMessage consoleMessage) {
+                    print("console message: ${consoleMessage.message}");
+                  },
+                ),
               ),
             ),
-          ),
-          FooterButtonBar(
-            webView: webView,
-            url: url.value,
-            partialTranslate: partialTranslate,
-          )
-        ])),
+            FooterButtonBar(
+              webView: webView,
+              url: url.value,
+              partialTranslate: partialTranslate,
+            )
+          ]));
+        }),
       ),
     );
   }
