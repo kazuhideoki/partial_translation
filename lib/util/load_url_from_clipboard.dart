@@ -16,23 +16,18 @@ Future<List<String>> extractUrlsFromClipBoard() async {
   return texts.where((text) => text.contains(regExp)).toList();
 }
 
-void showSnackBarJumpUrl(
-    BuildContext context, InAppWebViewController controller, List<String> urls) async {
-
+void showSnackBarJumpUrl(BuildContext context,
+    InAppWebViewController controller, List<String> urls) async {
   if (urls.length != 0) {
     print('urls.contains(regExp)!!!');
+    final encodedUrls = Uri.encodeFull(urls[0]);
     print(urls);
     final snackBar = SnackBar(
       content: Text('クリップボードのurlにアクセスしますか？'),
       action: SnackBarAction(
         label: 'Go!',
         onPressed: () {
-          // Some code to undo the change.
-          try {
-            controller.loadUrl(url: urls[0]);
-          } catch (err) {
-            controller.loadUrl(url: 'https://google.com');
-          }
+            controller.loadUrl(url: encodedUrls);
         },
       ),
     );

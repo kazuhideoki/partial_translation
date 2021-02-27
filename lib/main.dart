@@ -33,10 +33,10 @@ class MyApp extends HookWidget {
       }
     }
 
-    _focusNode.addListener(_handleFocusChange);
+    if (_focusNode.hasListeners == false) {
+      _focusNode.addListener(_handleFocusChange);
+    }
 
-    print(_focusNode);
-    print(_focusNode.hasFocus);
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
 
