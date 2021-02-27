@@ -16,7 +16,7 @@ import 'package:partial_translation/view_model/app_state.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv.load(fileName: '.env');
-  runApp(ProviderScope(child: MyApp()));
+  runApp(ProviderScope(child: MaterialApp(home: MyApp())));
 }
 
 class MyApp extends HookWidget {
@@ -26,7 +26,10 @@ class MyApp extends HookWidget {
     final _controller = useTextEditingController();
 
     final _focusNode = useFocusNode();
+    print('フォーカスノードは' + _focusNode.hasFocus.toString());
     final _isFocused = useState(false);
+    print('_isFocusedは' + _isFocused.value.toString());
+
     void _handleFocusChange() {
       if (_focusNode.hasFocus != _isFocused) {
         _isFocused.value = _focusNode.hasFocus;
@@ -105,13 +108,11 @@ class MyApp extends HookWidget {
               contextMenuItemClicked.title);
         });
 
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: TextField(
             controller: _controller,
             focusNode: _focusNode,
-            onTap: () => _focusNode.requestFocus(),
             onSubmitted: (rawText) {
               searchOnGoogle(rawText, webView);
             },
@@ -133,75 +134,83 @@ class MyApp extends HookWidget {
           ),
         ),
         body: Builder(builder: (BuildContext context) {
-          return Container(
-              child: Column(children: <Widget>[
-            Container(
-                child: progress.value < 1.0
-                    ? LinearProgressIndicator(value: progress.value)
-                    : Container()),
-            Expanded(
+            // iosでうまくunFocusさせるためのGestureDetector
+          return GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                _focusNode.unfocus();
+              },
+              onTapCancel: () {
+                _focusNode.unfocus();
+              },
               child: Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                child: InAppWebView(
-                  initialUrl: "https://google.com",
-                  contextMenu: contextMenu,
-                  initialOptions: InAppWebViewGroupOptions(
-                      crossPlatform: InAppWebViewOptions(
-                    debuggingEnabled: false,
-                  )),
-                  onWebViewCreated: (InAppWebViewController controller) async {
-                    print('onWebViewCreated');
-                    webView = controller;
+                  child: Column(children: <Widget>[
+                Container(
+                    child: progress.value < 1.0
+                        ? LinearProgressIndicator(value: progress.value)
+                        : Container()),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                    child: InAppWebView(
+                      initialUrl: "https://google.com",
+                      contextMenu: contextMenu,
+                      initialOptions: InAppWebViewGroupOptions(
+                          crossPlatform: InAppWebViewOptions(
+                        debuggingEnabled: false,
+                      )),
+                      onWebViewCreated:
+                          (InAppWebViewController controller) async {
+                        print('onWebViewCreated');
+                        webView = controller;
 
-                    // 右クリック有効可
-                    controller.injectJavascriptFileFromAsset(
-                        assetFilePath: 'javascript/enableContextMenu.js');
+                        // 右クリック有効可
+                        controller.injectJavascriptFileFromAsset(
+                            assetFilePath: 'javascript/enableContextMenu.js');
 
-                    // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+                        // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
-                    final urls = await extractUrlsFromClipBoard();
-                    if (urls.length != 0) {
-                      showSnackBarJumpUrl(context, controller, urls);
-                    }
-                  },
-                  onLoadStart:
-                      (InAppWebViewController controller, String newUrl) {
-                    print('onLoadStart');
-                    url.value = newUrl;
-                  },
-                  onLoadStop:
-                      (InAppWebViewController controller, String newUrl) async {
-                    print('onLoadStop');
-                    if (isLongTapToTranslate == true) {
-                      controller.injectJavascriptFileFromAsset(
-                          assetFilePath:
-                              'javascript/longTapToTranslateHandler.js');
-                    }
-                    controller.injectJavascriptFileFromAsset(
-                        assetFilePath: 'javascript/select_paragraph.js');
+                        final urls = await extractUrlsFromClipBoard();
+                        if (urls.length != 0) {
+                          showSnackBarJumpUrl(context, controller, urls);
+                        }
+                      },
+                      onLoadStart:
+                          (InAppWebViewController controller, String newUrl) {
+                        print('onLoadStart');
+                        url.value = newUrl;
+                      },
+                      onLoadStop: (InAppWebViewController controller,
+                          String newUrl) async {
+                        print('onLoadStop');
+                        if (isLongTapToTranslate == true) {
+                          controller.injectJavascriptFileFromAsset(
+                              assetFilePath:
+                                  'javascript/longTapToTranslateHandler.js');
+                        }
+                        controller.injectJavascriptFileFromAsset(
+                            assetFilePath: 'javascript/select_paragraph.js');
 
-                    url.value = newUrl;
-                  },
-                  onProgressChanged:
-                      (InAppWebViewController controller, int newProgress) {
-                    progress.value = newProgress / 100;
-                  },
-                  onConsoleMessage: (InAppWebViewController controller,
-                      ConsoleMessage consoleMessage) {
-                    print("console message: ${consoleMessage.message}");
-                  },
+                        url.value = newUrl;
+                      },
+                      onProgressChanged:
+                          (InAppWebViewController controller, int newProgress) {
+                        progress.value = newProgress / 100;
+                      },
+                      onConsoleMessage: (InAppWebViewController controller,
+                          ConsoleMessage consoleMessage) {
+                        print("console message: ${consoleMessage.message}");
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            FooterButtonBar(
-              webView: webView,
-              url: url.value,
-              partialTranslate: partialTranslate,
-            )
-          ]));
-        }),
-      ),
-    );
+                FooterButtonBar(
+                  webView: webView,
+                  url: url.value,
+                  partialTranslate: partialTranslate,
+                )
+              ])));
+        }));
   }
 }

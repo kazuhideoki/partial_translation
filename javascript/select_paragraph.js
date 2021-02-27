@@ -7,7 +7,7 @@ window.localStorage.setItem("isSelectParagraph", "false");
 window.addEventListener("touchstart", selectParagraph, true);
 
 function selectParagraph(e) {
-  console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
+  // console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
 
   let isSelectParagraph = window.localStorage.getItem("isSelectParagraph");
   if (isSelectParagraph === "true") {
@@ -15,7 +15,7 @@ function selectParagraph(e) {
   } else if (isSelectParagraph === "false") {
     isSelectParagraph = false;
   }
-  console.log(isSelectParagraph);
+  // console.log(isSelectParagraph);
 
   if (isSelectParagraph) {
     try {
