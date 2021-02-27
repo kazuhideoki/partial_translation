@@ -29,7 +29,6 @@ class MyApp extends HookWidget {
     print('フォーカスノードは' + _focusNode.hasFocus.toString());
     final _isFocused = useState(false);
     print('_isFocusedは' + _isFocused.value.toString());
-
     void _handleFocusChange() {
       if (_focusNode.hasFocus != _isFocused) {
         _isFocused.value = _focusNode.hasFocus;
@@ -39,6 +38,8 @@ class MyApp extends HookWidget {
     if (_focusNode.hasListeners == false) {
       _focusNode.addListener(_handleFocusChange);
     }
+
+    final hasUrlsOnClipboard = useState(false);
 
     final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
@@ -108,6 +109,7 @@ class MyApp extends HookWidget {
               contextMenuItemClicked.title);
         });
 
+    const toolBarHeight = 150.0;
     return Scaffold(
         appBar: AppBar(
           title: TextField(
@@ -134,83 +136,107 @@ class MyApp extends HookWidget {
           ),
         ),
         body: Builder(builder: (BuildContext context) {
-            // iosでうまくunFocusさせるためのGestureDetector
-          return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                _focusNode.unfocus();
-              },
-              onTapCancel: () {
-                _focusNode.unfocus();
-              },
-              child: Container(
-                  child: Column(children: <Widget>[
-                Container(
-                    child: progress.value < 1.0
-                        ? LinearProgressIndicator(value: progress.value)
-                        : Container()),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                    child: InAppWebView(
-                      initialUrl: "https://google.com",
-                      contextMenu: contextMenu,
-                      initialOptions: InAppWebViewGroupOptions(
-                          crossPlatform: InAppWebViewOptions(
-                        debuggingEnabled: false,
-                      )),
-                      onWebViewCreated:
-                          (InAppWebViewController controller) async {
-                        print('onWebViewCreated');
-                        webView = controller;
+          // iosでうまくunFocusさせるためのGestureDetector
+          return Stack(
+              children: [
+                GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      _focusNode.unfocus();
+                    },
+                    onTapCancel: () {
+                      _focusNode.unfocus();
+                    },
+                    child: Container(
+                        child: Column(children: <Widget>[
+                      Container(
+                          child: progress.value < 1.0
+                              ? LinearProgressIndicator(value: progress.value)
+                              : Container()),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.blueAccent)),
+                          child: InAppWebView(
+                            initialUrl: "https://google.com",
+                            contextMenu: contextMenu,
+                            initialOptions: InAppWebViewGroupOptions(
+                                crossPlatform: InAppWebViewOptions(
+                              debuggingEnabled: false,
+                            )),
+                            onWebViewCreated:
+                                (InAppWebViewController controller) async {
+                              print('onWebViewCreated');
+                              webView = controller;
 
-                        // 右クリック有効可
-                        controller.injectJavascriptFileFromAsset(
-                            assetFilePath: 'javascript/enableContextMenu.js');
+                              // 右クリック有効可
+                              controller.injectJavascriptFileFromAsset(
+                                  assetFilePath:
+                                      'javascript/enableContextMenu.js');
 
-                        // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+                              // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
-                        final urls = await extractUrlsFromClipBoard();
-                        if (urls.length != 0) {
-                          showSnackBarJumpUrl(context, controller, urls);
-                        }
-                      },
-                      onLoadStart:
-                          (InAppWebViewController controller, String newUrl) {
-                        print('onLoadStart');
-                        url.value = newUrl;
-                      },
-                      onLoadStop: (InAppWebViewController controller,
-                          String newUrl) async {
-                        print('onLoadStop');
-                        if (isLongTapToTranslate == true) {
-                          controller.injectJavascriptFileFromAsset(
-                              assetFilePath:
-                                  'javascript/longTapToTranslateHandler.js');
-                        }
-                        controller.injectJavascriptFileFromAsset(
-                            assetFilePath: 'javascript/select_paragraph.js');
+                              final urls = await extractUrlsFromClipBoard();
+                              hasUrlsOnClipboard.value = urls.length != 0;
+                              if (urls.length != 0) {
+                                showSnackBarJumpUrl(context, controller, urls);
+                              }
+                            },
+                            onLoadStart: (InAppWebViewController controller,
+                                String newUrl) {
+                              print('onLoadStart');
+                              url.value = newUrl;
+                            },
+                            onLoadStop: (InAppWebViewController controller,
+                                String newUrl) async {
+                              print('onLoadStop');
+                              if (isLongTapToTranslate == true) {
+                                controller.injectJavascriptFileFromAsset(
+                                    assetFilePath:
+                                        'javascript/longTapToTranslateHandler.js');
+                              }
+                              controller.injectJavascriptFileFromAsset(
+                                  assetFilePath:
+                                      'javascript/select_paragraph.js');
 
-                        url.value = newUrl;
-                      },
-                      onProgressChanged:
-                          (InAppWebViewController controller, int newProgress) {
-                        progress.value = newProgress / 100;
-                      },
-                      onConsoleMessage: (InAppWebViewController controller,
-                          ConsoleMessage consoleMessage) {
-                        print("console message: ${consoleMessage.message}");
-                      },
-                    ),
-                  ),
+                              url.value = newUrl;
+                            },
+                            onProgressChanged:
+                                (InAppWebViewController controller,
+                                    int newProgress) {
+                              progress.value = newProgress / 100;
+                            },
+                            onConsoleMessage:
+                                (InAppWebViewController controller,
+                                    ConsoleMessage consoleMessage) {
+                              print(
+                                  "console message: ${consoleMessage.message}");
+                            },
+                          ),
+                        ),
+                      ),
+                      FooterButtonBar(
+                        webView: webView,
+                        url: url.value,
+                        partialTranslate: partialTranslate,
+                      )
+                    ]))),
+                SizedBox(
+                  height: 80.0,
+                  width: double.infinity,
+                  child: ListView(children: [
+                    hasUrlsOnClipboard.value && _isFocused.value
+                        ? SizedBox(
+                            child: ListTile(
+                            leading: Icon(Icons.content_paste),
+                            title: Text('URL'),
+                            subtitle: Text('ここにURLが表示されます'),
+                            tileColor: Colors.white,
+                          ))
+                        : Text('')
+                  ]),
                 ),
-                FooterButtonBar(
-                  webView: webView,
-                  url: url.value,
-                  partialTranslate: partialTranslate,
-                )
-              ])));
+              ]);
         }));
   }
 }
