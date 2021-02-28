@@ -9,6 +9,7 @@ part of 'app_state.dart';
 _$_AppState _$_$_AppStateFromJson(Map<String, dynamic> json) {
   return _$_AppState(
     count: json['count'] as int ?? 0,
+    currentUrl: json['currentUrl'] as String ?? '',
     isLongTapToTranslate: json['isLongTapToTranslate'] as bool ?? false,
     isSelectParagraph: json['isSelectParagraph'] as bool ?? false,
   );
@@ -17,6 +18,7 @@ _$_AppState _$_$_AppStateFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$_$_AppStateToJson(_$_AppState instance) =>
     <String, dynamic>{
       'count': instance.count,
+      'currentUrl': instance.currentUrl,
       'isLongTapToTranslate': instance.isLongTapToTranslate,
       'isSelectParagraph': instance.isSelectParagraph,
     };

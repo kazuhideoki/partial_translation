@@ -12,6 +12,7 @@ import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/util/oprinal_gesture_detector.dart';
 import 'package:partial_translation/util/search_on_google.dart';
+import 'package:partial_translation/util/web_view/context_menu.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
 Future main() async {
@@ -25,7 +26,6 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _controller = useTextEditingController();
-
     final _focusNode = useFocusNode();
     print('フォーカスノードは' + _focusNode.hasFocus.toString());
     final _isFocused = useState(false);
@@ -40,11 +40,10 @@ class MyApp extends HookWidget {
       _focusNode.addListener(_handleFocusChange);
     }
 
-    final hasUrlsOnClipboard = useState(false);
-
-    final url = useState('');
     final progress = useState(0.1 as double); // 0でうまく出来なかった
-
+    // final currentUrl = useState('');
+    final currentUrl = useProvider(appStateProvider.state).currentUrl;
+    final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
     final getCount = useProvider(appStateProvider).getCount;
     final setCount = useProvider(appStateProvider).setCount;
     final isLongTapToTranslate =
@@ -82,36 +81,9 @@ class MyApp extends HookWidget {
       setCount(webView, count);
     }
 
-    // 一度まとめてクラスに書き変えてみたが動作が不安定だったため戻した
-    final contextMenu = ContextMenu(
-        options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
-        menuItems: [
-          ContextMenuItem(
-              androidId: 1,
-              iosId: "1",
-              title: '翻訳',
-              action: () {
-                partialTranslate();
-              })
-        ],
-        onCreateContextMenu: (hitTestResult) async {
-          print("onCreateContextMenu");
-        },
-        onHideContextMenu: () {
-          print("onHideContextMenu");
-        },
-        onContextMenuActionItemClicked: (contextMenuItemClicked) {
-          var id = (Platform.isAndroid)
-              ? contextMenuItemClicked.androidId
-              : contextMenuItemClicked.iosId;
-          print("onContextMenuActionItemClicked: " +
-              id.toString() +
-              " " +
-              contextMenuItemClicked.title);
-        });
+    final contextMenu = webViewContextMenu(partialTranslate);
 
     const toolBarHeight = 150.0;
-    // final asyncUrls = useFuture(extractUrlsFromClipBoard());
     return Scaffold(
         appBar: AppBar(
           title: TextField(
@@ -173,7 +145,6 @@ class MyApp extends HookWidget {
                           // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
                           final urls = await extractUrlsFromClipBoard();
-                          hasUrlsOnClipboard.value = urls.length != 0;
                           if (urls.length != 0) {
                             showSnackBarJumpUrl(context, controller, urls);
                           }
@@ -181,7 +152,7 @@ class MyApp extends HookWidget {
                         onLoadStart:
                             (InAppWebViewController controller, String newUrl) {
                           print('onLoadStart');
-                          url.value = newUrl;
+                          setCurrentUrl(newUrl);
                         },
                         onLoadStop: (InAppWebViewController controller,
                             String newUrl) async {
@@ -194,7 +165,7 @@ class MyApp extends HookWidget {
                           controller.injectJavascriptFileFromAsset(
                               assetFilePath: 'javascript/select_paragraph.js');
 
-                          url.value = newUrl;
+                          // currentUrl.value = newUrl;
                         },
                         onProgressChanged: (InAppWebViewController controller,
                             int newProgress) {
@@ -209,7 +180,7 @@ class MyApp extends HookWidget {
                   ),
                   FooterButtonBar(
                     webView: webView,
-                    url: url.value,
+                    url: currentUrl,
                     partialTranslate: partialTranslate,
                   )
                 ]))),
@@ -222,7 +193,10 @@ class MyApp extends HookWidget {
                   // if (snapshot.connectionState != ConnectionState.done)
                   //   return LinearProgressIndicator(value: null);
                   // if (snapshot.hasData == false) return Text('Error occurred');
-                  if (snapshot.connectionState == ConnectionState.done && snapshot.hasData&& snapshot.data.length != 0 && _isFocused.value) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      snapshot.hasData &&
+                      snapshot.data.length != 0 &&
+                      _isFocused.value) {
                     final encodedUrls = Uri.encodeFull(snapshot.data[0]);
                     return ListView(children: [
                       SizedBox(

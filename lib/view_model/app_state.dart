@@ -12,6 +12,7 @@ part 'app_state.g.dart';
 abstract class AppState with _$AppState {
   const factory AppState({
     @Default(0) int count,
+    @Default('') String currentUrl,
     @Default(false) bool isLongTapToTranslate,
     @Default(false) bool isSelectParagraph,
   }) = _AppState;
@@ -50,6 +51,10 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
+  void setCurrentUrl(String url) {
+    state = state.copyWith(currentUrl: url);
+  }
+
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる
   void switchLongTapToTranslate(
       InAppWebViewController webView, Function translate) {
@@ -73,7 +78,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(isLongTapToTranslate: !state.isLongTapToTranslate);
   }
 
-  Future<void> switchSelectParagraph(InAppWebViewController webView) async{
+  Future<void> switchSelectParagraph(InAppWebViewController webView) async {
     print('switchLongTapToTranslate');
     if (state.isSelectParagraph == false) {
       // webView.injectJavascriptFileFromAsset(
