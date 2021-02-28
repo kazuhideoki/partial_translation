@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
 
-class OptinalGestureDetector extends StatelessWidget {
-  const OptinalGestureDetector({Key key, @required this.focusNode, @required this.isFocused, @required this.child})
+class OptionalGestureDetector extends StatelessWidget {
+  const OptionalGestureDetector(
+      {Key key,
+      @required this.focusNode,
+      @required this.isFocused,
+      @required this.child})
       : super(key: key);
 
-  final focusNode;
-  final isFocused;
-  final child;
+  final FocusNode focusNode;
+  final bool isFocused;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    if (isFocused == true) {
-      return GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            focusNode.unfocus();
-          },
-          onTapCancel: () {
-            focusNode.unfocus();
-          },
-          child: child);
-    }
-    return Container(
-      child: child,
-    );
+    return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: isFocused ? () => focusNode.unfocus() : null,
+        onTapCancel: isFocused ? () => focusNode.unfocus() : null,
+        child: child);
   }
 }

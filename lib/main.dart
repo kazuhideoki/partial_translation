@@ -141,9 +141,9 @@ class MyApp extends HookWidget {
           // iosでうまくunFocusさせるためのGestureDetector
           return Stack(children: [
             // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
-            OptinalGestureDetector(
+            OptionalGestureDetector(
                 focusNode: _focusNode,
-                isFocused: _isFocused,
+                isFocused: _isFocused.value,
                 child: Container(
                     child: Column(children: <Widget>[
                   Container(
@@ -222,7 +222,7 @@ class MyApp extends HookWidget {
                   // if (snapshot.connectionState != ConnectionState.done)
                   //   return LinearProgressIndicator(value: null);
                   // if (snapshot.hasData == false) return Text('Error occurred');
-                  if (snapshot.data.length != 0 && _isFocused.value) {
+                  if (snapshot.connectionState == ConnectionState.done && snapshot.hasData&& snapshot.data.length != 0 && _isFocused.value) {
                     final encodedUrls = Uri.encodeFull(snapshot.data[0]);
                     return ListView(children: [
                       SizedBox(
