@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/custom_app_bar.dart';
 import 'package:partial_translation/util/load_url_from_clipboard.dart';
 import 'package:partial_translation/net/translate_api.dart';
 import 'package:partial_translation/model/pt_data.dart';
@@ -23,15 +24,11 @@ Future main() async {
 }
 
 class MyApp extends HookWidget {
-  // InAppWebViewController webView;
   @override
   Widget build(BuildContext context) {
-    var webView = useProvider(appStateProvider.state).webView;
-    print('mainのwebViewは ' + webView.toString());
+    final webView = useProvider(appStateProvider.state).webView;
     final setWebView = useProvider(appStateProvider).setWebView;
     final partialTranslate = useProvider(appStateProvider).partialTranslate;
-
-    // final webView = webviewData;
 
     final _controller = useTextEditingController();
     final _focusNode = useFocusNode();
@@ -52,8 +49,6 @@ class MyApp extends HookWidget {
     // final currentUrl = useState('');
     final currentUrl = useProvider(appStateProvider.state).currentUrl;
     final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
-    final getCount = useProvider(appStateProvider).getCount;
-    final setCount = useProvider(appStateProvider).setCount;
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
     final isSelectParagraph =
@@ -61,33 +56,9 @@ class MyApp extends HookWidget {
 
     const toolBarHeight = 150.0;
 
-    // final contextMenu =
-    //     generateContextMenu(() => partialTranslate(webView, getCount, setCount));
-
     return Scaffold(
         appBar: AppBar(
-          title: TextField(
-            controller: _controller,
-            focusNode: _focusNode,
-            onSubmitted: (rawText) {
-              searchOnGoogle(rawText, webView);
-            },
-            style: TextStyle(fontSize: 18),
-            decoration: InputDecoration(
-                hintText: _isFocused.value ? null : "Search",
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                suffixIcon: _isFocused.value == true
-                    ? FlatButton(
-                        onPressed: () => _controller.text = '',
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ))
-                    : null),
-          ),
+          title: CustomAppBar(controller: _controller, focusNode: _focusNode, isFocused: _isFocused.value),
         ),
         body: Builder(builder: (BuildContext context) {
           // iosでうまくunFocusさせるためのGestureDetector

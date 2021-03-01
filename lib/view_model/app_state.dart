@@ -17,7 +17,6 @@ part 'app_state.g.dart';
 abstract class AppState with _$AppState {
   const factory AppState({
     InAppWebViewController webView,
-    ContextMenu contextMenu,
     @Default(0) int count,
     @Default('') String currentUrl,
     @Default(false) bool isLongTapToTranslate,
@@ -34,12 +33,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(webView: webView);
     print(state.toString());
   }
-
-  void setContextMenu(ContextMenu contextMenu) {
-    state = state.copyWith(contextMenu: contextMenu);
-    print(state.toString());
-  }
-
 
   void incrementCount() {
     state = state.copyWith(count: state.count + 1);
