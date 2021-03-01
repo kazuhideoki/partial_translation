@@ -19,6 +19,8 @@ abstract class AppState with _$AppState {
     InAppWebViewController webView,
     @Default(0) int count,
     @Default('') String currentUrl,
+    // isFocusedだけappStateに移すとうまく動作しない
+    // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
     @Default(false) bool isSelectParagraph,
   }) = _AppState;
