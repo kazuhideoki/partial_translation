@@ -19,6 +19,9 @@ class CustomAppBar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
+    final isHome = useProvider(appStateProvider).isHome;
+    print('isHomeは $isHome');
+
     return TextField(
       controller: controller,
       focusNode: focusNode,

@@ -19,6 +19,7 @@ abstract class AppState with _$AppState {
     InAppWebViewController webView,
     @Default(0) int count,
     @Default('') String currentUrl,
+    @Default("https://www.google.com/") String initialUrl,
     // isFocusedだけappStateに移すとうまく動作しない
     // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
@@ -71,36 +72,38 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
     print('partialTranslateのwebViewは $webView');
 
+    await webView.injectJavascriptFileFromAsset(
+        assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
 
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
+    final targetText = await webView.getSelectedText();
 
-      final targetText = await webView.getSelectedText();
+    final translatedData = await GoogleTranslateApi().getApi([targetText]);
+    if (translatedData == null) return null;
 
-      final translatedData = await GoogleTranslateApi().getApi([targetText]);
-      if (translatedData == null) return null;
+    final translatedText =
+        translatedData['translations'][0]['translatedText'] as String;
 
-      final translatedText =
-          translatedData['translations'][0]['translatedText'] as String;
+    var count = await getCount();
 
-      var count = await getCount();
+    final ptData = PtData(count, targetText, translatedText);
 
-      final ptData = PtData(count, targetText, translatedText);
+    final value = jsonEncode(ptData);
+    print(value);
+    await webView.webStorage.localStorage
+        .setItem(key: 'ptData$count', value: value);
 
-      final value = jsonEncode(ptData);
-      print(value);
-      await webView.webStorage.localStorage
-          .setItem(key: 'ptData$count', value: value);
+    await webView.injectJavascriptFileFromAsset(
+        assetFilePath: 'javascript/replaceText.js');
 
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/replaceText.js');
-
-      count++;
-      setCount(count);
+    count++;
+    setCount(count);
   }
+
   void setCurrentUrl(String url) {
     state = state.copyWith(currentUrl: url);
   }
+
+  get isHome => state.currentUrl == state.initialUrl;
 
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる
   void switchLongTapToTranslate(

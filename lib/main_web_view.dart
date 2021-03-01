@@ -18,9 +18,11 @@ class MainWebView extends HookWidget {
     final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
+    final initialUrl =
+        useProvider(appStateProvider.state).initialUrl;
 
     return InAppWebView(
-      initialUrl: "https://google.com",
+      initialUrl: initialUrl,
       contextMenu: generateContextMenu(partialTranslate),
       initialOptions: InAppWebViewGroupOptions(
           crossPlatform: InAppWebViewOptions(

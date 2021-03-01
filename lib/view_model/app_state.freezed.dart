@@ -18,12 +18,14 @@ class _$AppStateTearOff {
       {InAppWebViewController webView,
       int count = 0,
       String currentUrl = '',
+      String initialUrl = "https://www.google.com/",
       bool isLongTapToTranslate = false,
       bool isSelectParagraph = false}) {
     return _AppState(
       webView: webView,
       count: count,
       currentUrl: currentUrl,
+      initialUrl: initialUrl,
       isLongTapToTranslate: isLongTapToTranslate,
       isSelectParagraph: isSelectParagraph,
     );
@@ -39,6 +41,8 @@ mixin _$AppState {
   InAppWebViewController get webView;
   int get count;
   String get currentUrl;
+  String get initialUrl; // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   bool get isSelectParagraph;
 
@@ -54,6 +58,7 @@ abstract class $AppStateCopyWith<$Res> {
       {InAppWebViewController webView,
       int count,
       String currentUrl,
+      String initialUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -71,6 +76,7 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
     Object webView = freezed,
     Object count = freezed,
     Object currentUrl = freezed,
+    Object initialUrl = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -81,6 +87,8 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
       count: count == freezed ? _value.count : count as int,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
+      initialUrl:
+          initialUrl == freezed ? _value.initialUrl : initialUrl as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -100,6 +108,7 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
       {InAppWebViewController webView,
       int count,
       String currentUrl,
+      String initialUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -118,6 +127,7 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
     Object webView = freezed,
     Object count = freezed,
     Object currentUrl = freezed,
+    Object initialUrl = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -128,6 +138,8 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
       count: count == freezed ? _value.count : count as int,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
+      initialUrl:
+          initialUrl == freezed ? _value.initialUrl : initialUrl as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -144,10 +156,12 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       {this.webView,
       this.count = 0,
       this.currentUrl = '',
+      this.initialUrl = "https://www.google.com/",
       this.isLongTapToTranslate = false,
       this.isSelectParagraph = false})
       : assert(count != null),
         assert(currentUrl != null),
+        assert(initialUrl != null),
         assert(isLongTapToTranslate != null),
         assert(isSelectParagraph != null);
 
@@ -159,8 +173,12 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @JsonKey(defaultValue: '')
   @override
   final String currentUrl;
-  @JsonKey(defaultValue: false)
+  @JsonKey(defaultValue: "https://www.google.com/")
   @override
+  final String initialUrl;
+  @JsonKey(defaultValue: false)
+  @override // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   final bool isLongTapToTranslate;
   @JsonKey(defaultValue: false)
   @override
@@ -168,7 +186,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(webView: $webView, count: $count, currentUrl: $currentUrl, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
+    return 'AppState(webView: $webView, count: $count, currentUrl: $currentUrl, initialUrl: $initialUrl, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
   }
 
   @override
@@ -179,6 +197,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       ..add(DiagnosticsProperty('webView', webView))
       ..add(DiagnosticsProperty('count', count))
       ..add(DiagnosticsProperty('currentUrl', currentUrl))
+      ..add(DiagnosticsProperty('initialUrl', initialUrl))
       ..add(DiagnosticsProperty('isLongTapToTranslate', isLongTapToTranslate))
       ..add(DiagnosticsProperty('isSelectParagraph', isSelectParagraph));
   }
@@ -195,6 +214,9 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
             (identical(other.currentUrl, currentUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.currentUrl, currentUrl)) &&
+            (identical(other.initialUrl, initialUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.initialUrl, initialUrl)) &&
             (identical(other.isLongTapToTranslate, isLongTapToTranslate) ||
                 const DeepCollectionEquality().equals(
                     other.isLongTapToTranslate, isLongTapToTranslate)) &&
@@ -209,6 +231,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       const DeepCollectionEquality().hash(webView) ^
       const DeepCollectionEquality().hash(count) ^
       const DeepCollectionEquality().hash(currentUrl) ^
+      const DeepCollectionEquality().hash(initialUrl) ^
       const DeepCollectionEquality().hash(isLongTapToTranslate) ^
       const DeepCollectionEquality().hash(isSelectParagraph);
 
@@ -223,6 +246,7 @@ abstract class _AppState implements AppState {
       {InAppWebViewController webView,
       int count,
       String currentUrl,
+      String initialUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph}) = _$_AppState;
 
@@ -233,6 +257,9 @@ abstract class _AppState implements AppState {
   @override
   String get currentUrl;
   @override
+  String get initialUrl;
+  @override // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   @override
   bool get isSelectParagraph;
