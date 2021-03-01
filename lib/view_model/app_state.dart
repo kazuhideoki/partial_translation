@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
+import 'package:partial_translation/net/translate_api.dart';
+import 'package:partial_translation/util/web_view/partial_translate.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
@@ -11,28 +16,42 @@ part 'app_state.g.dart';
 @freezed
 abstract class AppState with _$AppState {
   const factory AppState({
+    InAppWebViewController webView,
+    ContextMenu contextMenu,
     @Default(0) int count,
     @Default('') String currentUrl,
     @Default(false) bool isLongTapToTranslate,
     @Default(false) bool isSelectParagraph,
   }) = _AppState;
-  factory AppState.fromJson(Map<String, dynamic> json) =>
-      _$AppStateFromJson(json);
+  // factory AppState.fromJson(Map<String, dynamic> json) =>
+  //     _$AppStateFromJson(json);
 }
 
 class AppStateNotifier extends StateNotifier<AppState> {
   AppStateNotifier() : super(AppState());
 
+  void setWebView(InAppWebViewController webView) {
+    state = state.copyWith(webView: webView);
+    print(state.toString());
+  }
+
+  void setContextMenu(ContextMenu contextMenu) {
+    state = state.copyWith(contextMenu: contextMenu);
+    print(state.toString());
+  }
+
+
   void incrementCount() {
     state = state.copyWith(count: state.count + 1);
   }
 
-  Future<int> getCount(InAppWebViewController webView) async {
+  Future<int> getCount() async {
+    final webView = state.webView;
     try {
       var count = await ConnectLocalStorage(webView).getCount();
       if (count == null) {
         count = 0;
-        await setCount(webView, 0);
+        await setCount(0);
         return count;
       }
       state = state.copyWith(count: count);
@@ -42,7 +61,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
-  Future<void> setCount(InAppWebViewController webView, int count) async {
+  Future<void> setCount(int count) async {
+    final webView = state.webView;
     try {
       await ConnectLocalStorage(webView).setCount(count);
       state = state.copyWith(count: count);
@@ -51,6 +71,38 @@ class AppStateNotifier extends StateNotifier<AppState> {
     }
   }
 
+  void partialTranslate() async {
+    final webView = state.webView;
+
+    print('partialTranslateのwebViewは $webView');
+
+
+      await webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
+
+      final targetText = await webView.getSelectedText();
+
+      final translatedData = await GoogleTranslateApi().getApi([targetText]);
+      if (translatedData == null) return null;
+
+      final translatedText =
+          translatedData['translations'][0]['translatedText'] as String;
+
+      var count = await getCount();
+
+      final ptData = PtData(count, targetText, translatedText);
+
+      final value = jsonEncode(ptData);
+      print(value);
+      await webView.webStorage.localStorage
+          .setItem(key: 'ptData$count', value: value);
+
+      await webView.injectJavascriptFileFromAsset(
+          assetFilePath: 'javascript/replaceText.js');
+
+      count++;
+      setCount(count);
+  }
   void setCurrentUrl(String url) {
     state = state.copyWith(currentUrl: url);
   }

@@ -13,6 +13,7 @@ import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/util/oprinal_gesture_detector.dart';
 import 'package:partial_translation/util/search_on_google.dart';
 import 'package:partial_translation/util/web_view/context_menu.dart';
+import 'package:partial_translation/util/web_view/partial_translate.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
 Future main() async {
@@ -22,9 +23,16 @@ Future main() async {
 }
 
 class MyApp extends HookWidget {
-  InAppWebViewController webView;
+  // InAppWebViewController webView;
   @override
   Widget build(BuildContext context) {
+    var webView = useProvider(appStateProvider.state).webView;
+    print('mainのwebViewは ' + webView.toString());
+    final setWebView = useProvider(appStateProvider).setWebView;
+    final partialTranslate = useProvider(appStateProvider).partialTranslate;
+
+    // final webView = webviewData;
+
     final _controller = useTextEditingController();
     final _focusNode = useFocusNode();
     print('フォーカスノードは' + _focusNode.hasFocus.toString());
@@ -51,39 +59,11 @@ class MyApp extends HookWidget {
     final isSelectParagraph =
         useProvider(appStateProvider.state).isSelectParagraph;
 
-    void partialTranslate() async {
-      print('partialTranslateのwebViewは $webView');
-
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/modifyDomBeforeTranslate.js');
-
-      final targetText = await webView.getSelectedText();
-
-      final translatedData = await GoogleTranslateApi().getApi([targetText]);
-      if (translatedData == null) return null;
-
-      final translatedText =
-          translatedData['translations'][0]['translatedText'] as String;
-
-      var count = await getCount(webView);
-
-      final ptData = PtData(count, targetText, translatedText);
-
-      final value = jsonEncode(ptData);
-      print(value);
-      await webView.webStorage.localStorage
-          .setItem(key: 'ptData$count', value: value);
-
-      await webView.injectJavascriptFileFromAsset(
-          assetFilePath: 'javascript/replaceText.js');
-
-      count++;
-      setCount(webView, count);
-    }
-
-    final contextMenu = webViewContextMenu(partialTranslate);
-
     const toolBarHeight = 150.0;
+
+    // final contextMenu =
+    //     generateContextMenu(() => partialTranslate(webView, getCount, setCount));
+
     return Scaffold(
         appBar: AppBar(
           title: TextField(
@@ -128,7 +108,8 @@ class MyApp extends HookWidget {
                           border: Border.all(color: Colors.blueAccent)),
                       child: InAppWebView(
                         initialUrl: "https://google.com",
-                        contextMenu: contextMenu,
+                        contextMenu:
+                            generateContextMenu(partialTranslate),
                         initialOptions: InAppWebViewGroupOptions(
                             crossPlatform: InAppWebViewOptions(
                           debuggingEnabled: false,
@@ -136,7 +117,8 @@ class MyApp extends HookWidget {
                         onWebViewCreated:
                             (InAppWebViewController controller) async {
                           print('onWebViewCreated');
-                          webView = controller;
+                          // webView = controller;
+                          setWebView(controller);
 
                           // 右クリック有効可
                           controller.injectJavascriptFileFromAsset(

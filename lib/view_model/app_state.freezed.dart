@@ -8,9 +8,6 @@ part of 'app_state.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
-AppState _$AppStateFromJson(Map<String, dynamic> json) {
-  return _AppState.fromJson(json);
-}
 
 /// @nodoc
 class _$AppStateTearOff {
@@ -18,21 +15,20 @@ class _$AppStateTearOff {
 
 // ignore: unused_element
   _AppState call(
-      {int count = 0,
+      {InAppWebViewController webView,
+      ContextMenu contextMenu,
+      int count = 0,
       String currentUrl = '',
       bool isLongTapToTranslate = false,
       bool isSelectParagraph = false}) {
     return _AppState(
+      webView: webView,
+      contextMenu: contextMenu,
       count: count,
       currentUrl: currentUrl,
       isLongTapToTranslate: isLongTapToTranslate,
       isSelectParagraph: isSelectParagraph,
     );
-  }
-
-// ignore: unused_element
-  AppState fromJson(Map<String, Object> json) {
-    return AppState.fromJson(json);
   }
 }
 
@@ -42,12 +38,13 @@ const $AppState = _$AppStateTearOff();
 
 /// @nodoc
 mixin _$AppState {
+  InAppWebViewController get webView;
+  ContextMenu get contextMenu;
   int get count;
   String get currentUrl;
   bool get isLongTapToTranslate;
   bool get isSelectParagraph;
 
-  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $AppStateCopyWith<AppState> get copyWith;
 }
@@ -57,7 +54,9 @@ abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res>;
   $Res call(
-      {int count,
+      {InAppWebViewController webView,
+      ContextMenu contextMenu,
+      int count,
       String currentUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
@@ -73,12 +72,20 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
 
   @override
   $Res call({
+    Object webView = freezed,
+    Object contextMenu = freezed,
     Object count = freezed,
     Object currentUrl = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
     return _then(_value.copyWith(
+      webView: webView == freezed
+          ? _value.webView
+          : webView as InAppWebViewController,
+      contextMenu: contextMenu == freezed
+          ? _value.contextMenu
+          : contextMenu as ContextMenu,
       count: count == freezed ? _value.count : count as int,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
@@ -98,7 +105,9 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
       __$AppStateCopyWithImpl<$Res>;
   @override
   $Res call(
-      {int count,
+      {InAppWebViewController webView,
+      ContextMenu contextMenu,
+      int count,
       String currentUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
@@ -115,12 +124,20 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object webView = freezed,
+    Object contextMenu = freezed,
     Object count = freezed,
     Object currentUrl = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
     return _then(_AppState(
+      webView: webView == freezed
+          ? _value.webView
+          : webView as InAppWebViewController,
+      contextMenu: contextMenu == freezed
+          ? _value.contextMenu
+          : contextMenu as ContextMenu,
       count: count == freezed ? _value.count : count as int,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
@@ -134,12 +151,12 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
 class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   const _$_AppState(
-      {this.count = 0,
+      {this.webView,
+      this.contextMenu,
+      this.count = 0,
       this.currentUrl = '',
       this.isLongTapToTranslate = false,
       this.isSelectParagraph = false})
@@ -148,9 +165,10 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
         assert(isLongTapToTranslate != null),
         assert(isSelectParagraph != null);
 
-  factory _$_AppState.fromJson(Map<String, dynamic> json) =>
-      _$_$_AppStateFromJson(json);
-
+  @override
+  final InAppWebViewController webView;
+  @override
+  final ContextMenu contextMenu;
   @JsonKey(defaultValue: 0)
   @override
   final int count;
@@ -166,7 +184,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(count: $count, currentUrl: $currentUrl, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
+    return 'AppState(webView: $webView, contextMenu: $contextMenu, count: $count, currentUrl: $currentUrl, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
   }
 
   @override
@@ -174,6 +192,8 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'AppState'))
+      ..add(DiagnosticsProperty('webView', webView))
+      ..add(DiagnosticsProperty('contextMenu', contextMenu))
       ..add(DiagnosticsProperty('count', count))
       ..add(DiagnosticsProperty('currentUrl', currentUrl))
       ..add(DiagnosticsProperty('isLongTapToTranslate', isLongTapToTranslate))
@@ -184,6 +204,12 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _AppState &&
+            (identical(other.webView, webView) ||
+                const DeepCollectionEquality()
+                    .equals(other.webView, webView)) &&
+            (identical(other.contextMenu, contextMenu) ||
+                const DeepCollectionEquality()
+                    .equals(other.contextMenu, contextMenu)) &&
             (identical(other.count, count) ||
                 const DeepCollectionEquality().equals(other.count, count)) &&
             (identical(other.currentUrl, currentUrl) ||
@@ -200,6 +226,8 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(webView) ^
+      const DeepCollectionEquality().hash(contextMenu) ^
       const DeepCollectionEquality().hash(count) ^
       const DeepCollectionEquality().hash(currentUrl) ^
       const DeepCollectionEquality().hash(isLongTapToTranslate) ^
@@ -209,22 +237,21 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @override
   _$AppStateCopyWith<_AppState> get copyWith =>
       __$AppStateCopyWithImpl<_AppState>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$_$_AppStateToJson(this);
-  }
 }
 
 abstract class _AppState implements AppState {
   const factory _AppState(
-      {int count,
+      {InAppWebViewController webView,
+      ContextMenu contextMenu,
+      int count,
       String currentUrl,
       bool isLongTapToTranslate,
       bool isSelectParagraph}) = _$_AppState;
 
-  factory _AppState.fromJson(Map<String, dynamic> json) = _$_AppState.fromJson;
-
+  @override
+  InAppWebViewController get webView;
+  @override
+  ContextMenu get contextMenu;
   @override
   int get count;
   @override

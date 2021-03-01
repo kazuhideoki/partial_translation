@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'dart:io';
 
-final webViewContextMenu = (Function partialTranslate) => ContextMenu(
+import 'package:partial_translation/util/web_view/partial_translate.dart';
+
+final generateContextMenu = (partialTranslate) => ContextMenu(
     options: ContextMenuOptions(hideDefaultSystemContextMenuItems: true),
     menuItems: [
       ContextMenuItem(
