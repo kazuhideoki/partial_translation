@@ -42,7 +42,10 @@ class MyApp extends HookWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: CustomAppBar(controller: _controller, focusNode: _focusNode, isFocused: _isFocused.value),
+          title: CustomAppBar(
+              controller: _controller,
+              focusNode: _focusNode,
+              isFocused: _isFocused.value),
         ),
         body: Builder(builder: (BuildContext context) {
           // iosでうまくunFocusさせるためのGestureDetector
@@ -61,7 +64,9 @@ class MyApp extends HookWidget {
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.blueAccent)),
-                      child: MainWebView(progress: progress.value,),
+                      child: MainWebView(
+                        progress: progress.value,
+                      ),
                     ),
                   ),
                   FooterButtonBar(
@@ -76,9 +81,6 @@ class MyApp extends HookWidget {
               child: FutureBuilder(
                 future: extractUrlsFromClipBoard(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  // if (snapshot.connectionState != ConnectionState.done)
-                  //   return LinearProgressIndicator(value: null);
-                  // if (snapshot.hasData == false) return Text('Error occurred');
                   if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.hasData &&
                       snapshot.data.length != 0 &&
@@ -94,6 +96,7 @@ class MyApp extends HookWidget {
                         onTap: () {
                           webView.loadUrl(url: encodedUrls);
                           _focusNode.unfocus();
+                          _controller.text = '';
                         },
                       ))
                     ]);

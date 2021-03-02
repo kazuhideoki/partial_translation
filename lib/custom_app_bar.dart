@@ -36,29 +36,32 @@ class CustomAppBar extends HookWidget {
           style: TextStyle(fontSize: 18),
           decoration: InputDecoration(
               hintText: isFocused ? null : "Search",
-              prefixIcon: 
-                  Icon(
-                      Icons.search,
-                      color: Colors.white,
-                    )
-                  ,
+              prefixIcon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
               suffixIcon: FlatButton(
-                      onPressed: () {
-                        controller.text = '';
-                      },
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ))
-                  ),
+                  onPressed: () {
+                    controller.text = '';
+                  },
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ))),
         ),
       ),
       Visibility(
           visible: !showSearchBar,
           maintainState: true,
           child: ListTile(
-            title: Text(pageTitle, overflow: TextOverflow.ellipsis,),
-            onTap: () => focusNode.requestFocus()))
+              title: Text(
+                pageTitle,
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () {
+                focusNode.requestFocus();
+                controller.text = controller.text.trimRight() + ' ';
+              }))
     ]);
   }
 }
