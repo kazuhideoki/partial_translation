@@ -19,30 +19,46 @@ class CustomAppBar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
+    final currentUrl = useProvider(appStateProvider.state).currentUrl;
     final isHome = useProvider(appStateProvider).isHome;
-    print('isHomeは $isHome');
 
-    return TextField(
-      controller: controller,
-      focusNode: focusNode,
-      onSubmitted: (rawText) {
-        searchOnGoogle(rawText, webView);
-      },
-      style: TextStyle(fontSize: 18),
-      decoration: InputDecoration(
-          hintText: isFocused ? null : "Search",
-          prefixIcon: Icon(
-            Icons.search,
-            color: Colors.white,
-          ),
-          suffixIcon: isFocused == true
-              ? FlatButton(
-                  onPressed: () => controller.text = '',
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ))
-              : null),
-    );
+    return Column(children: [
+      Visibility(
+        visible: isFocused,
+        maintainState: true,
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          onSubmitted: (rawText) {
+            searchOnGoogle(rawText, webView);
+          },
+          style: TextStyle(fontSize: 18),
+          decoration: InputDecoration(
+              hintText: isFocused ? null : "Search",
+              prefixIcon: isFocused
+                  ? Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    )
+                  : null,
+              suffixIcon: isFocused == true
+                  ? FlatButton(
+                      onPressed: () {
+                        controller.text = '';
+                        focusNode.unfocus();
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ))
+                  : null),
+        ),
+      ),
+      Visibility(
+          visible: !isFocused,
+          maintainState: true,
+          child: ListTile(
+              title: Text(currentUrl), onTap: () => focusNode.requestFocus()))
+    ]);
   }
 }

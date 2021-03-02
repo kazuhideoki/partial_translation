@@ -18,8 +18,7 @@ class MainWebView extends HookWidget {
     final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
-    final initialUrl =
-        useProvider(appStateProvider.state).initialUrl;
+    final initialUrl = useProvider(appStateProvider.state).initialUrl;
 
     return InAppWebView(
       initialUrl: initialUrl,
@@ -46,6 +45,7 @@ class MainWebView extends HookWidget {
       },
       onLoadStart: (InAppWebViewController controller, String newUrl) {
         print('onLoadStart');
+        print('setCurrentUrl $newUrl');
         setCurrentUrl(newUrl);
       },
       onLoadStop: (InAppWebViewController controller, String newUrl) async {

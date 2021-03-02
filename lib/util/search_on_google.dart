@@ -7,5 +7,5 @@ void searchOnGoogle(String rawText, InAppWebViewController controller) {
 
               controller.loadUrl(
                 // wwwに？
-                  url: 'https://google.com/search?q=${text}');
+                  url: 'https://www.google.com/search?q=${text}');
 }
