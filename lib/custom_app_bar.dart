@@ -57,7 +57,7 @@ class CustomAppBar extends HookWidget {
           visible: !showSearchBar,
           maintainState: true,
           child: ListTile(
-            title: Text(pageTitle),
+            title: Text(pageTitle, overflow: TextOverflow.ellipsis,),
             onTap: () => focusNode.requestFocus()))
     ]);
   }
