@@ -8,9 +8,6 @@ part of 'app_state.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
-AppState _$AppStateFromJson(Map<String, dynamic> json) {
-  return _AppState.fromJson(json);
-}
 
 /// @nodoc
 class _$AppStateTearOff {
@@ -18,19 +15,24 @@ class _$AppStateTearOff {
 
 // ignore: unused_element
   _AppState call(
-      {int count = 0,
+      {InAppWebViewController webView,
+      int count = 0,
+      String pageTitle = '',
+      String currentUrl = '',
+      String initialUrl = "https://www.google.com/",
+      String searchKeyword = '',
       bool isLongTapToTranslate = false,
       bool isSelectParagraph = false}) {
     return _AppState(
+      webView: webView,
       count: count,
+      pageTitle: pageTitle,
+      currentUrl: currentUrl,
+      initialUrl: initialUrl,
+      searchKeyword: searchKeyword,
       isLongTapToTranslate: isLongTapToTranslate,
       isSelectParagraph: isSelectParagraph,
     );
-  }
-
-// ignore: unused_element
-  AppState fromJson(Map<String, Object> json) {
-    return AppState.fromJson(json);
   }
 }
 
@@ -40,11 +42,16 @@ const $AppState = _$AppStateTearOff();
 
 /// @nodoc
 mixin _$AppState {
+  InAppWebViewController get webView;
   int get count;
+  String get pageTitle;
+  String get currentUrl;
+  String get initialUrl;
+  String get searchKeyword; // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   bool get isSelectParagraph;
 
-  Map<String, dynamic> toJson();
   @JsonKey(ignore: true)
   $AppStateCopyWith<AppState> get copyWith;
 }
@@ -53,7 +60,15 @@ mixin _$AppState {
 abstract class $AppStateCopyWith<$Res> {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) then) =
       _$AppStateCopyWithImpl<$Res>;
-  $Res call({int count, bool isLongTapToTranslate, bool isSelectParagraph});
+  $Res call(
+      {InAppWebViewController webView,
+      int count,
+      String pageTitle,
+      String currentUrl,
+      String initialUrl,
+      String searchKeyword,
+      bool isLongTapToTranslate,
+      bool isSelectParagraph});
 }
 
 /// @nodoc
@@ -66,12 +81,28 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
 
   @override
   $Res call({
+    Object webView = freezed,
     Object count = freezed,
+    Object pageTitle = freezed,
+    Object currentUrl = freezed,
+    Object initialUrl = freezed,
+    Object searchKeyword = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
     return _then(_value.copyWith(
+      webView: webView == freezed
+          ? _value.webView
+          : webView as InAppWebViewController,
       count: count == freezed ? _value.count : count as int,
+      pageTitle: pageTitle == freezed ? _value.pageTitle : pageTitle as String,
+      currentUrl:
+          currentUrl == freezed ? _value.currentUrl : currentUrl as String,
+      initialUrl:
+          initialUrl == freezed ? _value.initialUrl : initialUrl as String,
+      searchKeyword: searchKeyword == freezed
+          ? _value.searchKeyword
+          : searchKeyword as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -87,7 +118,15 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) then) =
       __$AppStateCopyWithImpl<$Res>;
   @override
-  $Res call({int count, bool isLongTapToTranslate, bool isSelectParagraph});
+  $Res call(
+      {InAppWebViewController webView,
+      int count,
+      String pageTitle,
+      String currentUrl,
+      String initialUrl,
+      String searchKeyword,
+      bool isLongTapToTranslate,
+      bool isSelectParagraph});
 }
 
 /// @nodoc
@@ -101,12 +140,28 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object webView = freezed,
     Object count = freezed,
+    Object pageTitle = freezed,
+    Object currentUrl = freezed,
+    Object initialUrl = freezed,
+    Object searchKeyword = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
     return _then(_AppState(
+      webView: webView == freezed
+          ? _value.webView
+          : webView as InAppWebViewController,
       count: count == freezed ? _value.count : count as int,
+      pageTitle: pageTitle == freezed ? _value.pageTitle : pageTitle as String,
+      currentUrl:
+          currentUrl == freezed ? _value.currentUrl : currentUrl as String,
+      initialUrl:
+          initialUrl == freezed ? _value.initialUrl : initialUrl as String,
+      searchKeyword: searchKeyword == freezed
+          ? _value.searchKeyword
+          : searchKeyword as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -117,26 +172,45 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
   }
 }
 
-@JsonSerializable()
-
 /// @nodoc
 class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   const _$_AppState(
-      {this.count = 0,
+      {this.webView,
+      this.count = 0,
+      this.pageTitle = '',
+      this.currentUrl = '',
+      this.initialUrl = "https://www.google.com/",
+      this.searchKeyword = '',
       this.isLongTapToTranslate = false,
       this.isSelectParagraph = false})
       : assert(count != null),
+        assert(pageTitle != null),
+        assert(currentUrl != null),
+        assert(initialUrl != null),
+        assert(searchKeyword != null),
         assert(isLongTapToTranslate != null),
         assert(isSelectParagraph != null);
 
-  factory _$_AppState.fromJson(Map<String, dynamic> json) =>
-      _$_$_AppStateFromJson(json);
-
+  @override
+  final InAppWebViewController webView;
   @JsonKey(defaultValue: 0)
   @override
   final int count;
-  @JsonKey(defaultValue: false)
+  @JsonKey(defaultValue: '')
   @override
+  final String pageTitle;
+  @JsonKey(defaultValue: '')
+  @override
+  final String currentUrl;
+  @JsonKey(defaultValue: "https://www.google.com/")
+  @override
+  final String initialUrl;
+  @JsonKey(defaultValue: '')
+  @override
+  final String searchKeyword;
+  @JsonKey(defaultValue: false)
+  @override // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   final bool isLongTapToTranslate;
   @JsonKey(defaultValue: false)
   @override
@@ -144,7 +218,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(count: $count, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
+    return 'AppState(webView: $webView, count: $count, pageTitle: $pageTitle, currentUrl: $currentUrl, initialUrl: $initialUrl, searchKeyword: $searchKeyword, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
   }
 
   @override
@@ -152,7 +226,12 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'AppState'))
+      ..add(DiagnosticsProperty('webView', webView))
       ..add(DiagnosticsProperty('count', count))
+      ..add(DiagnosticsProperty('pageTitle', pageTitle))
+      ..add(DiagnosticsProperty('currentUrl', currentUrl))
+      ..add(DiagnosticsProperty('initialUrl', initialUrl))
+      ..add(DiagnosticsProperty('searchKeyword', searchKeyword))
       ..add(DiagnosticsProperty('isLongTapToTranslate', isLongTapToTranslate))
       ..add(DiagnosticsProperty('isSelectParagraph', isSelectParagraph));
   }
@@ -161,8 +240,23 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _AppState &&
+            (identical(other.webView, webView) ||
+                const DeepCollectionEquality()
+                    .equals(other.webView, webView)) &&
             (identical(other.count, count) ||
                 const DeepCollectionEquality().equals(other.count, count)) &&
+            (identical(other.pageTitle, pageTitle) ||
+                const DeepCollectionEquality()
+                    .equals(other.pageTitle, pageTitle)) &&
+            (identical(other.currentUrl, currentUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.currentUrl, currentUrl)) &&
+            (identical(other.initialUrl, initialUrl) ||
+                const DeepCollectionEquality()
+                    .equals(other.initialUrl, initialUrl)) &&
+            (identical(other.searchKeyword, searchKeyword) ||
+                const DeepCollectionEquality()
+                    .equals(other.searchKeyword, searchKeyword)) &&
             (identical(other.isLongTapToTranslate, isLongTapToTranslate) ||
                 const DeepCollectionEquality().equals(
                     other.isLongTapToTranslate, isLongTapToTranslate)) &&
@@ -174,7 +268,12 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(webView) ^
       const DeepCollectionEquality().hash(count) ^
+      const DeepCollectionEquality().hash(pageTitle) ^
+      const DeepCollectionEquality().hash(currentUrl) ^
+      const DeepCollectionEquality().hash(initialUrl) ^
+      const DeepCollectionEquality().hash(searchKeyword) ^
       const DeepCollectionEquality().hash(isLongTapToTranslate) ^
       const DeepCollectionEquality().hash(isSelectParagraph);
 
@@ -182,24 +281,33 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @override
   _$AppStateCopyWith<_AppState> get copyWith =>
       __$AppStateCopyWithImpl<_AppState>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$_$_AppStateToJson(this);
-  }
 }
 
 abstract class _AppState implements AppState {
   const factory _AppState(
-      {int count,
+      {InAppWebViewController webView,
+      int count,
+      String pageTitle,
+      String currentUrl,
+      String initialUrl,
+      String searchKeyword,
       bool isLongTapToTranslate,
       bool isSelectParagraph}) = _$_AppState;
 
-  factory _AppState.fromJson(Map<String, dynamic> json) = _$_AppState.fromJson;
-
+  @override
+  InAppWebViewController get webView;
   @override
   int get count;
   @override
+  String get pageTitle;
+  @override
+  String get currentUrl;
+  @override
+  String get initialUrl;
+  @override
+  String get searchKeyword;
+  @override // isFocusedだけappStateに移すとうまく動作しない
+// @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   @override
   bool get isSelectParagraph;
