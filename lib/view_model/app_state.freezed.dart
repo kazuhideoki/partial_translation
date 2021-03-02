@@ -17,15 +17,19 @@ class _$AppStateTearOff {
   _AppState call(
       {InAppWebViewController webView,
       int count = 0,
+      String pageTitle = '',
       String currentUrl = '',
       String initialUrl = "https://www.google.com/",
+      String searchKeyword = '',
       bool isLongTapToTranslate = false,
       bool isSelectParagraph = false}) {
     return _AppState(
       webView: webView,
       count: count,
+      pageTitle: pageTitle,
       currentUrl: currentUrl,
       initialUrl: initialUrl,
+      searchKeyword: searchKeyword,
       isLongTapToTranslate: isLongTapToTranslate,
       isSelectParagraph: isSelectParagraph,
     );
@@ -40,8 +44,10 @@ const $AppState = _$AppStateTearOff();
 mixin _$AppState {
   InAppWebViewController get webView;
   int get count;
+  String get pageTitle;
   String get currentUrl;
-  String get initialUrl; // isFocusedだけappStateに移すとうまく動作しない
+  String get initialUrl;
+  String get searchKeyword; // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   bool get isSelectParagraph;
@@ -57,8 +63,10 @@ abstract class $AppStateCopyWith<$Res> {
   $Res call(
       {InAppWebViewController webView,
       int count,
+      String pageTitle,
       String currentUrl,
       String initialUrl,
+      String searchKeyword,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -75,8 +83,10 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
   $Res call({
     Object webView = freezed,
     Object count = freezed,
+    Object pageTitle = freezed,
     Object currentUrl = freezed,
     Object initialUrl = freezed,
+    Object searchKeyword = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -85,10 +95,14 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
           ? _value.webView
           : webView as InAppWebViewController,
       count: count == freezed ? _value.count : count as int,
+      pageTitle: pageTitle == freezed ? _value.pageTitle : pageTitle as String,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
       initialUrl:
           initialUrl == freezed ? _value.initialUrl : initialUrl as String,
+      searchKeyword: searchKeyword == freezed
+          ? _value.searchKeyword
+          : searchKeyword as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -107,8 +121,10 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
   $Res call(
       {InAppWebViewController webView,
       int count,
+      String pageTitle,
       String currentUrl,
       String initialUrl,
+      String searchKeyword,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -126,8 +142,10 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
   $Res call({
     Object webView = freezed,
     Object count = freezed,
+    Object pageTitle = freezed,
     Object currentUrl = freezed,
     Object initialUrl = freezed,
+    Object searchKeyword = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -136,10 +154,14 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
           ? _value.webView
           : webView as InAppWebViewController,
       count: count == freezed ? _value.count : count as int,
+      pageTitle: pageTitle == freezed ? _value.pageTitle : pageTitle as String,
       currentUrl:
           currentUrl == freezed ? _value.currentUrl : currentUrl as String,
       initialUrl:
           initialUrl == freezed ? _value.initialUrl : initialUrl as String,
+      searchKeyword: searchKeyword == freezed
+          ? _value.searchKeyword
+          : searchKeyword as String,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -155,13 +177,17 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   const _$_AppState(
       {this.webView,
       this.count = 0,
+      this.pageTitle = '',
       this.currentUrl = '',
       this.initialUrl = "https://www.google.com/",
+      this.searchKeyword = '',
       this.isLongTapToTranslate = false,
       this.isSelectParagraph = false})
       : assert(count != null),
+        assert(pageTitle != null),
         assert(currentUrl != null),
         assert(initialUrl != null),
+        assert(searchKeyword != null),
         assert(isLongTapToTranslate != null),
         assert(isSelectParagraph != null);
 
@@ -172,10 +198,16 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   final int count;
   @JsonKey(defaultValue: '')
   @override
+  final String pageTitle;
+  @JsonKey(defaultValue: '')
+  @override
   final String currentUrl;
   @JsonKey(defaultValue: "https://www.google.com/")
   @override
   final String initialUrl;
+  @JsonKey(defaultValue: '')
+  @override
+  final String searchKeyword;
   @JsonKey(defaultValue: false)
   @override // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
@@ -186,7 +218,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(webView: $webView, count: $count, currentUrl: $currentUrl, initialUrl: $initialUrl, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
+    return 'AppState(webView: $webView, count: $count, pageTitle: $pageTitle, currentUrl: $currentUrl, initialUrl: $initialUrl, searchKeyword: $searchKeyword, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
   }
 
   @override
@@ -196,8 +228,10 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       ..add(DiagnosticsProperty('type', 'AppState'))
       ..add(DiagnosticsProperty('webView', webView))
       ..add(DiagnosticsProperty('count', count))
+      ..add(DiagnosticsProperty('pageTitle', pageTitle))
       ..add(DiagnosticsProperty('currentUrl', currentUrl))
       ..add(DiagnosticsProperty('initialUrl', initialUrl))
+      ..add(DiagnosticsProperty('searchKeyword', searchKeyword))
       ..add(DiagnosticsProperty('isLongTapToTranslate', isLongTapToTranslate))
       ..add(DiagnosticsProperty('isSelectParagraph', isSelectParagraph));
   }
@@ -211,12 +245,18 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
                     .equals(other.webView, webView)) &&
             (identical(other.count, count) ||
                 const DeepCollectionEquality().equals(other.count, count)) &&
+            (identical(other.pageTitle, pageTitle) ||
+                const DeepCollectionEquality()
+                    .equals(other.pageTitle, pageTitle)) &&
             (identical(other.currentUrl, currentUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.currentUrl, currentUrl)) &&
             (identical(other.initialUrl, initialUrl) ||
                 const DeepCollectionEquality()
                     .equals(other.initialUrl, initialUrl)) &&
+            (identical(other.searchKeyword, searchKeyword) ||
+                const DeepCollectionEquality()
+                    .equals(other.searchKeyword, searchKeyword)) &&
             (identical(other.isLongTapToTranslate, isLongTapToTranslate) ||
                 const DeepCollectionEquality().equals(
                     other.isLongTapToTranslate, isLongTapToTranslate)) &&
@@ -230,8 +270,10 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(webView) ^
       const DeepCollectionEquality().hash(count) ^
+      const DeepCollectionEquality().hash(pageTitle) ^
       const DeepCollectionEquality().hash(currentUrl) ^
       const DeepCollectionEquality().hash(initialUrl) ^
+      const DeepCollectionEquality().hash(searchKeyword) ^
       const DeepCollectionEquality().hash(isLongTapToTranslate) ^
       const DeepCollectionEquality().hash(isSelectParagraph);
 
@@ -245,8 +287,10 @@ abstract class _AppState implements AppState {
   const factory _AppState(
       {InAppWebViewController webView,
       int count,
+      String pageTitle,
       String currentUrl,
       String initialUrl,
+      String searchKeyword,
       bool isLongTapToTranslate,
       bool isSelectParagraph}) = _$_AppState;
 
@@ -255,9 +299,13 @@ abstract class _AppState implements AppState {
   @override
   int get count;
   @override
+  String get pageTitle;
+  @override
   String get currentUrl;
   @override
   String get initialUrl;
+  @override
+  String get searchKeyword;
   @override // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
   bool get isLongTapToTranslate;

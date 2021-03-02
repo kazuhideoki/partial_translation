@@ -18,8 +18,10 @@ abstract class AppState with _$AppState {
   const factory AppState({
     InAppWebViewController webView,
     @Default(0) int count,
+    @Default('') String pageTitle,
     @Default('') String currentUrl,
     @Default("https://www.google.com/") String initialUrl,
+    @Default('') String searchKeyword,
     // isFocusedだけappStateに移すとうまく動作しない
     // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
@@ -99,12 +101,18 @@ class AppStateNotifier extends StateNotifier<AppState> {
     setCount(count);
   }
 
+  void setPageTitle(String value) {
+    state = state.copyWith(pageTitle: value);
+  }
   void setCurrentUrl(String url) {
     state = state.copyWith(currentUrl: url);
   }
 
   get isHome => state.currentUrl == state.initialUrl;
 
+  void setSearchKeyword(String value) {
+    state = state.copyWith(currentUrl: value);
+  }
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる
   void switchLongTapToTranslate(
       InAppWebViewController webView, Function translate) {

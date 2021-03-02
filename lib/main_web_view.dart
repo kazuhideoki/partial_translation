@@ -15,6 +15,7 @@ class MainWebView extends HookWidget {
   Widget build(BuildContext context) {
     final partialTranslate = useProvider(appStateProvider).partialTranslate;
     final setWebView = useProvider(appStateProvider).setWebView;
+    final setPageTitle = useProvider(appStateProvider).setPageTitle;
     final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
@@ -43,9 +44,10 @@ class MainWebView extends HookWidget {
           showSnackBarJumpUrl(context, controller, urls);
         }
       },
-      onLoadStart: (InAppWebViewController controller, String newUrl) {
+      onLoadStart: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStart');
         print('setCurrentUrl $newUrl');
+        setPageTitle(await controller.getTitle());
         setCurrentUrl(newUrl);
       },
       onLoadStop: (InAppWebViewController controller, String newUrl) async {

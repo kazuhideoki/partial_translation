@@ -19,6 +19,7 @@ class CustomAppBar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
+    final pageTitle = useProvider(appStateProvider.state).pageTitle;
     final currentUrl = useProvider(appStateProvider.state).currentUrl;
     final isHome = useProvider(appStateProvider).isHome;
 
@@ -58,7 +59,8 @@ class CustomAppBar extends HookWidget {
           visible: !isFocused,
           maintainState: true,
           child: ListTile(
-              title: Text(currentUrl), onTap: () => focusNode.requestFocus()))
+            title: Text(pageTitle),
+            onTap: () => focusNode.requestFocus()))
     ]);
   }
 }
