@@ -47,8 +47,6 @@ class MainWebView extends HookWidget {
       onLoadStart: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStart');
         print('setCurrentUrl $newUrl');
-        setPageTitle(await controller.getTitle());
-        setCurrentUrl(newUrl);
       },
       onLoadStop: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStop');
@@ -59,7 +57,9 @@ class MainWebView extends HookWidget {
         controller.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/select_paragraph.js');
 
-        // currentUrl.value = newUrl;
+        final title = await controller.getTitle();
+        setPageTitle(title);
+        setCurrentUrl(newUrl);
       },
       onProgressChanged: (InAppWebViewController controller, int newProgress) {
         progress = newProgress / 100;

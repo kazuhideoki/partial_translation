@@ -20,12 +20,12 @@ class CustomAppBar extends HookWidget {
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
     final pageTitle = useProvider(appStateProvider.state).pageTitle;
-    final currentUrl = useProvider(appStateProvider.state).currentUrl;
     final isHome = useProvider(appStateProvider).isHome;
+    final showSearchBar = isFocused || isHome;
 
     return Column(children: [
       Visibility(
-        visible: isFocused,
+        visible: showSearchBar,
         maintainState: true,
         child: TextField(
           controller: controller,
@@ -36,27 +36,25 @@ class CustomAppBar extends HookWidget {
           style: TextStyle(fontSize: 18),
           decoration: InputDecoration(
               hintText: isFocused ? null : "Search",
-              prefixIcon: isFocused
-                  ? Icon(
+              prefixIcon: 
+                  Icon(
                       Icons.search,
                       color: Colors.white,
                     )
-                  : null,
-              suffixIcon: isFocused == true
-                  ? FlatButton(
+                  ,
+              suffixIcon: FlatButton(
                       onPressed: () {
                         controller.text = '';
-                        focusNode.unfocus();
                       },
                       child: Icon(
                         Icons.close,
                         color: Colors.white,
                       ))
-                  : null),
+                  ),
         ),
       ),
       Visibility(
-          visible: !isFocused,
+          visible: !showSearchBar,
           maintainState: true,
           child: ListTile(
             title: Text(pageTitle),
