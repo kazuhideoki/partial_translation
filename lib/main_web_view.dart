@@ -32,14 +32,14 @@ class MainWebView extends HookWidget {
       )),
       onWebViewCreated: (InAppWebViewController controller) async {
         print('onWebViewCreated');
+        // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+        await controller.evaluateJavascript(source: '''console.log('あえてエラー')''');
         setWebView(controller);
-        loadIsSelectParagraph(controller);
+        await loadIsSelectParagraph(controller);
 
         // 右クリック有効可
-        controller.injectJavascriptFileFromAsset(
+        await controller.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/enableContextMenu.js');
-
-        // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
         final urls = await extractUrlsFromClipBoard();
         if (urls.length != 0) {
@@ -52,10 +52,10 @@ class MainWebView extends HookWidget {
       onLoadStop: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStop');
         if (isLongTapToTranslate == true) {
-          controller.injectJavascriptFileFromAsset(
+          await controller.injectJavascriptFileFromAsset(
               assetFilePath: 'javascript/longTapToTranslateHandler.js');
         }
-        controller.injectJavascriptFileFromAsset(
+        await controller.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/select_paragraph.js');
 
         final title = await controller.getTitle();

@@ -39,9 +39,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
     try {
       var count = await ConnectLocalStorage(webView).getCount();
       if (count == null) {
-        count = 0;
         await setCount(0);
-        return count;
+        return 0;
       }
       state = state.copyWith(count: count);
       return count;
@@ -104,6 +103,8 @@ class AppStateNotifier extends StateNotifier<AppState> {
   Future<bool> loadIsSelectParagraph(InAppWebViewController webView) async {
     final localStorage = ConnectLocalStorage(webView);
     final value = await localStorage.getIsSelectParagraph();
+    print('loadIsSelectParagraph value $value');
+    print(value.runtimeType);
     if (value == null) {
       // 値がない場合は初期化
       await localStorage.setIsSelectParagraph(false);
@@ -120,6 +121,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   Future<void> switchSelectParagraph() async {
     print('switchSelectParagraph');
     final switched = state.isSelectParagraph ? false : true;
+    print(switched);
     await ConnectLocalStorage(state.webView).setIsSelectParagraph(switched);
     state = state.copyWith(isSelectParagraph: switched);
   }

@@ -16,7 +16,9 @@ class FooterButtonBar extends HookWidget {
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
     final currentUrl = useProvider(appStateProvider.state).currentUrl;
-    final isSelectParagraph = context.read(appStateProvider.state).isSelectParagraph;
+    final isSelectParagraph =
+        context.read(appStateProvider.state).isSelectParagraph;
+    print('footer isSelectParagraph $isSelectParagraph');
     final switchSelectParagraph =
         useProvider(appStateProvider).switchSelectParagraph;
     return Container(
@@ -54,9 +56,9 @@ class FooterButtonBar extends HookWidget {
                 final isSelectParagraphLocal = await webView
                     .webStorage.localStorage
                     .getItem(key: 'isSelectParagraph');
-                print(
-                    '''ローカルストレージのisSelectParagraphは $isSelectParagraphLocal, 
-                    stateのisSelectParagraphは $isSelectParagraph''' );
+                print('''ローカルストレージのisSelectParagraphは $isSelectParagraphLocal, 
+                    stateのisSelectParagraphは $isSelectParagraph''');
+                webView.webStorage.localStorage.clear();
               }),
           RaisedButton(
             child: Icon(Icons.open_in_browser),
@@ -80,14 +82,14 @@ class FooterButtonBar extends HookWidget {
           //   builder: (BuildContext context, watch, child) {
           //     final isSelectParagraph = watch(appStateProvider.state).isSelectParagraph;
           //     print('FooterButtonBarのisSelectParagraph $isSelectParagraph');
-              
-              RaisedButton(
-                child: Icon(Icons.article),
-                color: isSelectParagraph ? Colors.orangeAccent : Colors.grey,
-                onPressed: () async {
-                  await switchSelectParagraph();
-                },
-              ),
+
+          RaisedButton(
+            child: Icon(Icons.article),
+            color: isSelectParagraph ? Colors.orangeAccent : Colors.grey,
+            onPressed: () async {
+              await switchSelectParagraph();
+            },
+          ),
         ],
       ),
     );

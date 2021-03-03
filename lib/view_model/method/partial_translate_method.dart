@@ -4,7 +4,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:partial_translation/model/pt_data.dart';
 import 'package:partial_translation/net/translate_api.dart';
 
-void partialTranslateMethod(InAppWebViewController webView,getCount, setCount) async {
+void partialTranslateMethod(InAppWebViewController webView, getCount, setCount) async {
   print('partialTranslateのwebViewは $webView');
 
     await webView.injectJavascriptFileFromAsset(
