@@ -32,14 +32,15 @@ class MainWebView extends HookWidget {
       )),
       onWebViewCreated: (InAppWebViewController controller) async {
         print('onWebViewCreated');
+        // ※ ここでandroidでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
+        // 2度めのアクセスで正常動作
+
         setWebView(controller);
         loadIsSelectParagraph(controller);
 
         // 右クリック有効可
         controller.injectJavascriptFileFromAsset(
             assetFilePath: 'javascript/enableContextMenu.js');
-
-        // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
 
         final urls = await extractUrlsFromClipBoard();
         if (urls.length != 0) {

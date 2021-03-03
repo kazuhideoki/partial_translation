@@ -54,9 +54,13 @@ class FooterButtonBar extends HookWidget {
                 final isSelectParagraphLocal = await webView
                     .webStorage.localStorage
                     .getItem(key: 'isSelectParagraph');
+                final keyy = await webView
+                    .webStorage.localStorage
+                    .getItem(key: 'keyy');
                 print(
                     '''ローカルストレージのisSelectParagraphは $isSelectParagraphLocal, 
-                    stateのisSelectParagraphは $isSelectParagraph''' );
+                    stateのisSelectParagraphは $isSelectParagraph 
+                    keyyは $keyy''' );
               }),
           RaisedButton(
             child: Icon(Icons.open_in_browser),

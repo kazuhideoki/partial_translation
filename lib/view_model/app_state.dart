@@ -101,24 +101,24 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(isLongTapToTranslate: !state.isLongTapToTranslate);
   }
 
-  Future<bool> loadIsSelectParagraph(InAppWebViewController webView) async {
+  Future<void> loadIsSelectParagraph(InAppWebViewController webView) async {
+    print('loadIsSelectParagraph');
     final localStorage = ConnectLocalStorage(webView);
     try {
+      // android実機で一度目のlocalStorageへのアクセスでエラーを起こすと、2度めから正常にアクセスできる
+      await localStorage.getIsSelectParagraph();
       final value = await localStorage.getIsSelectParagraph();
+      print('valueは $value');
       if (value == null) {
         // 値がない場合は初期化
         await localStorage.setIsSelectParagraph(false);
-        await setIsSelectParagraph(false);
+        state = state.copyWith(isSelectParagraph: false);
       } else {
-        await setIsSelectParagraph(value);
+        state = state.copyWith(isSelectParagraph: value);
       }
     } catch (err) {
       print('loadIsSelectParagraph: $err');
     }
-  }
-
-  Future<void> setIsSelectParagraph(bool value) {
-    state = state.copyWith(isSelectParagraph: value);
   }
 
   Future<void> switchSelectParagraph() async {
