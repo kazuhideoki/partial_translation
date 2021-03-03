@@ -32,7 +32,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   void setWebView(InAppWebViewController webView) {
     state = state.copyWith(webView: webView);
-    print(state.toString());
   }
 
   Future<int> getCount() async {
@@ -88,7 +87,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
       webView.addJavaScriptHandler(
           handlerName: 'translateByLongTap',
           callback: (arg) {
-            print('argは $arg');
             translate();
           });
       webView.injectJavascriptFileFromAsset(
@@ -103,14 +101,27 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(isLongTapToTranslate: !state.isLongTapToTranslate);
   }
 
-  Future<void> switchSelectParagraph(InAppWebViewController webView) async {
-    print('switchLongTapToTranslate');
-    if (state.isSelectParagraph == false) {
-      await ConnectLocalStorage(webView).setIsSelectParagraph(true);
+  Future<bool> loadIsSelectParagraph(InAppWebViewController webView) async {
+    final localStorage = ConnectLocalStorage(webView);
+    final value = await localStorage.getIsSelectParagraph();
+    if (value == null) {
+      // 値がない場合は初期化
+      await localStorage.setIsSelectParagraph(false);
+      setIsSelectParagraph(false);
     } else {
-      await ConnectLocalStorage(webView).setIsSelectParagraph(false);
+      setIsSelectParagraph(value);
     }
-    state = state.copyWith(isSelectParagraph: !state.isSelectParagraph);
+  }
+
+  Future<void> setIsSelectParagraph(bool value) {
+    state = state.copyWith(isSelectParagraph: value);
+  }
+
+  Future<void> switchSelectParagraph() async {
+    print('switchSelectParagraph');
+    final switched = state.isSelectParagraph ? false : true;
+    await ConnectLocalStorage(state.webView).setIsSelectParagraph(switched);
+    state = state.copyWith(isSelectParagraph: switched);
   }
 }
 

@@ -20,13 +20,9 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
-    final partialTranslate = useProvider(appStateProvider).partialTranslate;
-
     final _controller = useTextEditingController();
     final _focusNode = useFocusNode();
-    print('フォーカスノードは' + _focusNode.hasFocus.toString());
     final _isFocused = useState(false);
-    print('_isFocusedは' + _isFocused.value.toString());
     void _handleFocusChange() {
       if (_focusNode.hasFocus != _isFocused) {
         _isFocused.value = _focusNode.hasFocus;
@@ -38,7 +34,6 @@ class MyApp extends HookWidget {
     }
 
     final progress = useState(0.0 as double);
-    final currentUrl = useProvider(appStateProvider.state).currentUrl;
 
     return Scaffold(
         appBar: AppBar(
@@ -69,11 +64,7 @@ class MyApp extends HookWidget {
                       ),
                     ),
                   ),
-                  FooterButtonBar(
-                    webView: webView,
-                    url: currentUrl,
-                    partialTranslate: partialTranslate,
-                  )
+                  FooterButtonBar()
                 ]))),
             SizedBox(
               height: 80.0,
