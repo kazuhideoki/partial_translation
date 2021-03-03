@@ -103,13 +103,17 @@ class AppStateNotifier extends StateNotifier<AppState> {
 
   Future<bool> loadIsSelectParagraph(InAppWebViewController webView) async {
     final localStorage = ConnectLocalStorage(webView);
-    final value = await localStorage.getIsSelectParagraph();
-    if (value == null) {
-      // 値がない場合は初期化
-      await localStorage.setIsSelectParagraph(false);
-      setIsSelectParagraph(false);
-    } else {
-      setIsSelectParagraph(value);
+    try {
+      final value = await localStorage.getIsSelectParagraph();
+      if (value == null) {
+        // 値がない場合は初期化
+        await localStorage.setIsSelectParagraph(false);
+        await setIsSelectParagraph(false);
+      } else {
+        await setIsSelectParagraph(value);
+      }
+    } catch (err) {
+      print('loadIsSelectParagraph: $err');
     }
   }
 
