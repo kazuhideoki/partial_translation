@@ -15,6 +15,8 @@ class MainWebView extends HookWidget {
   Widget build(BuildContext context) {
     final partialTranslate = useProvider(appStateProvider).partialTranslate;
     final setWebView = useProvider(appStateProvider).setWebView;
+    final loadIsSelectParagraph =
+        useProvider(appStateProvider).loadIsSelectParagraph;
     final setPageTitle = useProvider(appStateProvider).setPageTitle;
     final setCurrentUrl = useProvider(appStateProvider).setCurrentUrl;
     final isLongTapToTranslate =
@@ -30,8 +32,8 @@ class MainWebView extends HookWidget {
       )),
       onWebViewCreated: (InAppWebViewController controller) async {
         print('onWebViewCreated');
-        // webView = controller;
         setWebView(controller);
+        loadIsSelectParagraph(controller);
 
         // 右クリック有効可
         controller.injectJavascriptFileFromAsset(
@@ -46,7 +48,6 @@ class MainWebView extends HookWidget {
       },
       onLoadStart: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStart');
-        print('setCurrentUrl $newUrl');
       },
       onLoadStop: (InAppWebViewController controller, String newUrl) async {
         print('onLoadStop');
