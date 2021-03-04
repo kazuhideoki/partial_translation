@@ -33,13 +33,16 @@ class MainWebView extends HookWidget {
       onWebViewCreated: (InAppWebViewController controller) async {
         print('onWebViewCreated');
         // ※ ここでローカルストレージの処理ができない？ SecurityError: The operation is insecure. Failed to read the 'localStorage' property from 'Window': Access is denied for this document. になる
-        await controller.evaluateJavascript(source: '''console.log('あえてエラー')''');
-        setWebView(controller);
-        await loadIsSelectParagraph(controller);
+        // (対策 実行を遅らせることで安定して処理できるうようになった)
+        Future.delayed(const Duration(milliseconds: 10), () async {
+          await controller.evaluateJavascript(source: '');
+          setWebView(controller);
+          await loadIsSelectParagraph(controller);
 
-        // 右クリック有効可
-        await controller.injectJavascriptFileFromAsset(
-            assetFilePath: 'javascript/enableContextMenu.js');
+          // 右クリック有効可
+          await controller.injectJavascriptFileFromAsset(
+              assetFilePath: 'javascript/enableContextMenu.js');
+        });
 
         final urls = await extractUrlsFromClipBoard();
         if (urls.length != 0) {
