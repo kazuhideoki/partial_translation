@@ -1,3 +1,0 @@
-bool isSearchResult(String url) {
-
-}

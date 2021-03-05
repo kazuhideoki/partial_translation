@@ -30,7 +30,6 @@ function createInsertingNodes(c) {
   originalPart.id = originalId;
   originalPart.className = COMMON_CLASS_NAME + " " + ORIGINAL_CLASS_NAME;
   originalPart.style.color = "blue";
-  console.log(originalPart.innerHTML);
 
   // 翻訳テキスト
   var translatedPart = document.createElement("span");

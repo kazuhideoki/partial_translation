@@ -9,7 +9,7 @@ var TRANSLATED_CLASS_NAME = "pt-translated";
 try {
   modifyPtNodes(); //  →originalPartとかぶっている → 以前の結果を削除する
 } catch (err) {
-  console.log("■エラーは " + err);
+  console.log("modifyDomBeforeTranslate.js: 【error】 " + err);
 }
 
 // ■■■■■■■■■■■■■■■■■■
@@ -27,18 +27,14 @@ function modifyPtNodes() {
   if (ptNodes.length) {
     Array.prototype.forEach.call(ptNodes, function (ptNode) {
       const originalNode = ptNode.childNodes[0];
-      console.log("originalNodeは " + originalNode);
       const translatedNode = ptNode.childNodes[1];
 
       const headPoint = range.comparePoint(originalNode, 0);
-      console.log("headPoint " + headPoint);
       const interPoint = range.comparePoint(translatedNode, 0);
-      console.log("interPoint " + interPoint);
       const tailPoint = range.comparePoint(
         translatedNode.childNodes[0],
         translatedNode.textContent.length
       );
-      console.log("tailPoint " + tailPoint);
 
       if (headPoint === 0 && interPoint === 1) {
         rangeOnLeft(ptNode, originalNode);
@@ -91,13 +87,6 @@ function modifyPtNodes() {
     function rangeOnRight(ptNode, translatedNode, originalNode) {
       console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
       window.getSelection().removeAllRanges();
-
-      // newRangeまで作れるが、addRangeが効かない
-      // const newRange = document.createRange();
-      // const endContainerNode = range.endContainer.cloneNode();
-      // newRange.selectNodeContents(endContainerNode);
-      // newRange.setEnd(endContainerNode, range.endOffset);
-      // console.log(JSON.stringify(newRange.toString()));
 
       window.getSelection().addRange(newRange);
     }

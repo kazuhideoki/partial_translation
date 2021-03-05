@@ -23,7 +23,6 @@ void partialTranslateMethod(InAppWebViewController webView, getCount, setCount) 
     final ptData = PtData(count, targetText, translatedText);
 
     final value = jsonEncode(ptData);
-    print(value);
     await webView.webStorage.localStorage
         .setItem(key: 'ptData$count', value: value);
 
