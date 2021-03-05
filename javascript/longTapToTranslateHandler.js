@@ -32,64 +32,13 @@ function listAllEventListeners() {
 }
 
 document.addEventListener("touchend", detectTouchEnd, false);
-// document.addEventListener("select", function (params) {
-//   console.log("select");
-// });
-// document.addEventListener("selectstart", function (params) {
-//   console.log("selectstart");
-// });
-// document.addEventListener("selection-change", function (params) {
-//   console.log("selection-change");
-// });
-// document.addEventListener("touchcancel", function (params) {
-//   console.log("touchcancel");
-// document.addEventListener("touchstart", function (params) {
-//   console.log("touchstart");
-// });
-// document.addEventListener("touchmove", function (params) {
-//   console.log("touchmove");
-// });
-document.addEventListener("mouseup", function (params) {
-  console.log("mouseup");
-});
 
 function detectTouchEnd() {
   console.log(`◆◆◆${arguments.callee.name}◆◆◆`);
-  // console.log(window?.getEventListeners(window));
-  // console.table(listAllEventListeners());
-
-  // console.log("★onselectは" + window.onselect);
 
   const selection = window.getSelection().toString().length;
-  // console.log(selection); // OK
 
   if (selection) {
     window.flutter_inappwebview.callHandler("translateByLongTap");
   }
 }
-console.log(JSON.stringify(listAllEventListeners()));
-
-var d = [
-  {
-    node: { __jsaction: {} },
-    type: "onerror",
-    func:
-      "function (){var d=c.slice();d.push.apply(d,arguments);return a.apply(this,d)}",
-  },
-  {
-    node: { __jsaction: {} },
-    type: "onload",
-    func:
-      "function (){var d=c.slice();d.push.apply(d,arguments);return a.apply(this,d)}",
-  },
-  {
-    node: { __jsaction: {} },
-    type: "onload",
-    func: "function (){d();a.Ca++;a.Ha<q_Nna&&q_Hna(a,b)}",
-  },
-  {
-    node: { __jsaction: {} },
-    type: "onload",
-    func: "function (){d();a.Ca++;a.Ha<q_Nna&&q_Hna(a,b)}",
-  },
-];

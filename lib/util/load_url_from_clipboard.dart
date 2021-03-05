@@ -19,9 +19,7 @@ Future<List<String>> extractUrlsFromClipBoard() async {
 void showSnackBarJumpUrl(BuildContext context,
     InAppWebViewController controller, List<String> urls) async {
   if (urls.length != 0) {
-    print('urls.contains(regExp)!!!');
     final encodedUrls = Uri.encodeFull(urls[0]);
-    print(urls);
     final snackBar = SnackBar(
       content: Text('クリップボードのurlにアクセスしますか？'),
       action: SnackBarAction(

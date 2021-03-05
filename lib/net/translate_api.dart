@@ -33,10 +33,9 @@ class GoogleTranslateApi {
               "targetLanguageCode": "ja",
               "contents": texts,
             });
-        print('responseは $response');
         return response.data;
       } catch (err) {
-        print('エラーは $err');
+        print('GoogleTranslateApi.getApi: 【error】 $err');
       }
   }
 }

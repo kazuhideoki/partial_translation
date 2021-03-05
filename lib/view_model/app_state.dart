@@ -45,7 +45,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
       state = state.copyWith(count: count);
       return count;
     } catch (err) {
-      print('AppStateNotifier.getCount: 【ERRROR】 $err');
+      print('AppStateNotifier.getCount: 【error】 $err');
     }
   }
 
@@ -55,7 +55,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
       await ConnectLocalStorage(webView).setCount(count);
       state = state.copyWith(count: count);
     } catch (err) {
-      print('AppStateNotifier.setCount: 【ERRROR】 $err');
+      print('AppStateNotifier.setCount: 【error】 $err');
     }
   }
 
@@ -103,8 +103,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
   Future<bool> loadIsSelectParagraph(InAppWebViewController webView) async {
     final localStorage = ConnectLocalStorage(webView);
     final value = await localStorage.getIsSelectParagraph();
-    print('loadIsSelectParagraph value $value');
-    print(value.runtimeType);
     if (value == null) {
       // 値がない場合は初期化
       await localStorage.setIsSelectParagraph(false);
@@ -121,7 +119,6 @@ class AppStateNotifier extends StateNotifier<AppState> {
   Future<void> switchSelectParagraph() async {
     print('switchSelectParagraph');
     final switched = state.isSelectParagraph ? false : true;
-    print(switched);
     await ConnectLocalStorage(state.webView).setIsSelectParagraph(switched);
     state = state.copyWith(isSelectParagraph: switched);
   }
