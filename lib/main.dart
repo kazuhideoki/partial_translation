@@ -13,7 +13,11 @@ import 'package:partial_translation/view_model/app_state.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv.load(fileName: '.env');
-  runApp(ProviderScope(child: MaterialApp(home: MyApp() ,debugShowCheckedModeBanner: false,)));
+  runApp(ProviderScope(
+      child: MaterialApp(
+    home: MyApp(),
+    debugShowCheckedModeBanner: false,
+  )));
 }
 
 class MyApp extends HookWidget {
@@ -66,38 +70,35 @@ class MyApp extends HookWidget {
                   ),
                   FooterButtonBar()
                 ]))),
-            // SizedBox(
-            //   height: 80.0,
-            //   width: double.infinity,
-            //   child: FutureBuilder(
-            //     future: extractUrlsFromClipBoard(),
-            //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-            //       if (snapshot.connectionState == ConnectionState.done &&
-            //           snapshot.hasData &&
-            //           snapshot.data.length != 0 &&
-            //           _isFocused.value) {
-            //         final encodedUrls = Uri.encodeFull(snapshot.data[0]);
-            //         return ListView(children: [
-            //           SizedBox(
-            //               child: ListTile(
-            //             leading: Icon(Icons.content_paste),
-            //             title: Text('From URL on Clipboard'),
-            //             subtitle: Text(snapshot.data[0]),
-            //             tileColor: Colors.white,
-            //             onTap: () {
-            //               webView.loadUrl(url: encodedUrls);
-            //               _focusNode.unfocus();
-            //               _controller.text = '';
-            //             },
-            //           ))
-            //         ]);
-            //       }
-            //       return ListView(
-            //         children: [ListTile(title: Text(''))],
-            //       );
-            //     },
-            //   ),
-            // ),
+            FutureBuilder(
+              future: extractUrlsFromClipBoard(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                final encodedUrls = Uri.encodeFull(snapshot.data[0]);
+                return Visibility(
+                    visible: snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData &&
+                        snapshot.data.length != 0 &&
+                        _isFocused.value,
+                    maintainState: false,
+                    child: Container(
+                        height: 80,
+                        width: double.infinity,
+                        child: ListView(children: [
+                          SizedBox(
+                              child: ListTile(
+                            leading: Icon(Icons.content_paste),
+                            title: Text('From URL on Clipboard'),
+                            subtitle: Text(snapshot.data[0]),
+                            tileColor: Colors.white,
+                            onTap: () {
+                              webView.loadUrl(url: encodedUrls);
+                              _focusNode.unfocus();
+                              _controller.text = '';
+                            },
+                          ))
+                        ])));
+              },
+            ),
           ]);
         }));
   }
