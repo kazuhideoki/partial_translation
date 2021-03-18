@@ -22,34 +22,34 @@ class FooterButtonBar extends HookWidget {
     return Container(
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
-        buttonMinWidth: 2.5,
         children: <Widget>[
-          RaisedButton(
-            child: Icon(Icons.arrow_back),
+          IconButton(
+            icon: Icon(Icons.arrow_back),
             onPressed: () {
               if (webView != null) {
                 webView.goBack();
               }
             },
           ),
-          RaisedButton(
-            child: Icon(Icons.arrow_forward),
+          
+          IconButton(
+            icon: Icon(Icons.arrow_forward),
             onPressed: () {
               if (webView != null) {
                 webView.goForward();
               }
             },
           ),
-          RaisedButton(
-            child: Icon(Icons.refresh),
+          IconButton(
+            icon: Icon(Icons.refresh),
             onPressed: () {
               if (webView != null) {
                 webView.reload();
               }
             },
           ),
-          RaisedButton(
-            child: Icon(Icons.open_in_browser),
+          IconButton(
+            icon: Icon(Icons.open_in_browser),
             onPressed: () async {
               await browser.open(
                   url: currentUrl,
@@ -60,8 +60,8 @@ class FooterButtonBar extends HookWidget {
             },
           ),
 
-          RaisedButton(
-            child: Icon(Icons.article),
+          IconButton(
+            icon: Icon(Icons.article),
             color: isSelectParagraph ? Colors.orangeAccent : Colors.grey,
             onPressed: () async {
               await switchSelectParagraph();
