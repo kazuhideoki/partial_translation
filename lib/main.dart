@@ -73,12 +73,12 @@ class MyApp extends HookWidget {
             FutureBuilder(
               future: extractUrlsFromClipBoard(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState != ConnectionState.done ||
+                        !snapshot.hasData ||
+                        snapshot.data.length == 0) return Visibility(visible: false, maintainState: false, child: Text(''));
                 final encodedUrls = Uri.encodeFull(snapshot.data[0]);
                 return Visibility(
-                    visible: snapshot.connectionState == ConnectionState.done &&
-                        snapshot.hasData &&
-                        snapshot.data.length != 0 &&
-                        _isFocused.value,
+                    visible: _isFocused.value,
                     maintainState: false,
                     child: Container(
                         height: 80,
