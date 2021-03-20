@@ -69,6 +69,7 @@ class MyApp extends HookWidget {
                       ),
                     ),
                   ),
+                  FooterButtonBar()
                   // Visibility(visible: isScrollDown, maintainState: false, child: FooterButtonBar())
                   
                 ]))),
