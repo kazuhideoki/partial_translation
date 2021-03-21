@@ -24,7 +24,7 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
-    // final isScrollDown = useProvider(appStateProvider.state).isScrollDown;
+    final isScrollDown = useProvider(appStateProvider.state).isScrollDown;
     final _controller = useTextEditingController();
     final _focusNode = useFocusNode();
     final _isFocused = useState(false);
@@ -69,8 +69,8 @@ class MyApp extends HookWidget {
                       ),
                     ),
                   ),
-                  FooterButtonBar()
-                  // Visibility(visible: isScrollDown, maintainState: false, child: FooterButtonBar())
+                  // FooterButtonBar()
+                  Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())
                   
                 ]))),
             FutureBuilder(

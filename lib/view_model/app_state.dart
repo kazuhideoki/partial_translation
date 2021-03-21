@@ -79,9 +79,9 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentUrl: value);
   }
 
-  // void setIsScrollDown(bool value) {
-  //   state = state.copyWith(isScrollDown: value);
-  // }
+  void setIsScrollDown(bool value) {
+    state = state.copyWith(isScrollDown: value);
+  }
 
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる
   void switchLongTapToTranslate(

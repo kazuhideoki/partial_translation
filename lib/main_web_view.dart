@@ -23,7 +23,7 @@ class MainWebView extends HookWidget {
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
     final initialUrl = useProvider(appStateProvider.state).initialUrl;
-    // final setIsScrollDown = useProvider(appStateProvider).setIsScrollDown;
+    final setIsScrollDown = useProvider(appStateProvider).setIsScrollDown;
 
     return InAppWebView(
       initialUrl: initialUrl,
@@ -74,9 +74,9 @@ class MainWebView extends HookWidget {
         Future.delayed(Duration(milliseconds: 100), () async {
           final position = await controller.getScrollY();
           if (position > y) {
-            // setIsScrollDown(true);
+            setIsScrollDown(true);
           } else if (position < y) {
-            // setIsScrollDown(false);
+            setIsScrollDown(false);
           }
         });
       },
