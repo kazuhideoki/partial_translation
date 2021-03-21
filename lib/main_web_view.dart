@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:googleapis/bigquery/v2.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/util/load_url_from_clipboard.dart';
 import 'package:partial_translation/util/web_view/context_menu.dart';
@@ -22,6 +23,7 @@ class MainWebView extends HookWidget {
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
     final initialUrl = useProvider(appStateProvider.state).initialUrl;
+    // final setIsScrollDown = useProvider(appStateProvider).setIsScrollDown;
 
     return InAppWebView(
       initialUrl: initialUrl,
@@ -67,6 +69,16 @@ class MainWebView extends HookWidget {
       },
       onProgressChanged: (InAppWebViewController controller, int newProgress) {
         progress = newProgress / 100;
+      },
+      onScrollChanged: (InAppWebViewController controller, int x, int y) {
+        Future.delayed(Duration(milliseconds: 100), () async {
+          final position = await controller.getScrollY();
+          if (position > y) {
+            // setIsScrollDown(true);
+          } else if (position < y) {
+            // setIsScrollDown(false);
+          }
+        });
       },
       onConsoleMessage:
           (InAppWebViewController controller, ConsoleMessage consoleMessage) {
