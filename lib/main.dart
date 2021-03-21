@@ -42,6 +42,7 @@ class MyApp extends HookWidget {
 
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: isScrollDown ? 0 : 60,
           title: CustomAppBar(
               controller: _controller,
               focusNode: _focusNode,
