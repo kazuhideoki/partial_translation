@@ -42,7 +42,7 @@ class MyApp extends HookWidget {
 
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: isScrollDown ? 0 : 60,
+          // toolbarHeight: isScrollDown ? 0 : 60,
           title: CustomAppBar(
               controller: _controller,
               focusNode: _focusNode,
@@ -71,9 +71,9 @@ class MyApp extends HookWidget {
                     ),
                   ),
                   // FooterButtonBar()
-                  Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())
-                  
+                  // Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar()),                  
                 ]))),
+                Align(alignment: Alignment.bottomCenter, child: Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())),
             FutureBuilder(
               future: extractUrlsFromClipBoard(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
