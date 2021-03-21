@@ -20,7 +20,9 @@ class FooterButtonBar extends HookWidget {
     final switchSelectParagraph =
         useProvider(appStateProvider).switchSelectParagraph;
     return Container(
+      color: Colors.white,
       child: ButtonBar(
+        
         alignment: MainAxisAlignment.center,
         children: <Widget>[
           IconButton(

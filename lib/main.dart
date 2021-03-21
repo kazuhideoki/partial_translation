@@ -41,14 +41,15 @@ class MyApp extends HookWidget {
     final progress = useState(0.0 as double);
 
     return Scaffold(
-        appBar: AppBar(
-          // toolbarHeight: isScrollDown ? 0 : 60,
-          title: CustomAppBar(
-              controller: _controller,
-              focusNode: _focusNode,
-              isFocused: _isFocused.value),
-        ),
-        body: Builder(builder: (BuildContext context) {
+        // extendBodyBehindAppBar: true,
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   title: CustomAppBar(
+        //       controller: _controller,
+        //       focusNode: _focusNode,
+        //       isFocused: _isFocused.value),
+        // ),
+        body: SafeArea(child: Builder(builder: (BuildContext context) {
           // iosでうまくunFocusさせるためのGestureDetector
           return Stack(children: [
             // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
@@ -71,15 +72,28 @@ class MyApp extends HookWidget {
                     ),
                   ),
                   // FooterButtonBar()
-                  // Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar()),                  
+                  // Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar()),
                 ]))),
-                Align(alignment: Alignment.bottomCenter, child: Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Visibility(
+                  visible: !isScrollDown,
+                  maintainState: false,
+                  child: CustomAppBar(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      isFocused: _isFocused.value)),
+            ),
+            Align(alignment: Alignment.bottomCenter, child: Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())),
+            // Align(alignment: Alignment.bottomCenter, child: FooterButtonBar()),
             FutureBuilder(
               future: extractUrlsFromClipBoard(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.connectionState != ConnectionState.done ||
-                        !snapshot.hasData ||
-                        snapshot.data.length == 0) return Visibility(visible: false, maintainState: false, child: Text(''));
+                    !snapshot.hasData ||
+                    snapshot.data.length == 0)
+                  return Visibility(
+                      visible: false, maintainState: false, child: Text(''));
                 final encodedUrls = Uri.encodeFull(snapshot.data[0]);
                 return Visibility(
                     visible: _isFocused.value,
@@ -104,6 +118,6 @@ class MyApp extends HookWidget {
               },
             ),
           ]);
-        }));
+        })));
   }
 }

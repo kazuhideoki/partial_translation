@@ -23,45 +23,51 @@ class CustomAppBar extends HookWidget {
     final isHome = useProvider(appStateProvider).isHome;
     final showSearchBar = isFocused || isHome;
 
-    return Column(children: [
-      Visibility(
-        visible: showSearchBar,
-        maintainState: true,
-        child: TextField(
-          controller: controller,
-          focusNode: focusNode,
-          onSubmitted: (rawText) {
-            searchOnGoogle(rawText, webView);
-          },
-          style: TextStyle(fontSize: 18),
-          decoration: InputDecoration(
-              hintText: isFocused ? null : "Search",
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-              suffixIcon: FlatButton(
-                  onPressed: () {
-                    controller.text = '';
-                  },
-                  child: Icon(
-                    Icons.close,
+    return Container(
+      color: Colors.blue,
+      height: 60,
+      // child: Expanded(
+        child: Column(children: [
+          Visibility(
+            visible: showSearchBar,
+            maintainState: true,
+            child: TextField(
+              controller: controller,
+              focusNode: focusNode,
+              onSubmitted: (rawText) {
+                searchOnGoogle(rawText, webView);
+              },
+              style: TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                  hintText: isFocused ? null : "Search",
+                  prefixIcon: Icon(
+                    Icons.search,
                     color: Colors.white,
-                  ))),
-        ),
-      ),
-      Visibility(
-          visible: !showSearchBar,
-          maintainState: true,
-          child: ListTile(
-              title: Text(
-                pageTitle,
-                overflow: TextOverflow.ellipsis,
-              ),
-              onTap: () {
-                focusNode.requestFocus();
-                controller.text = controller.text.trimRight() + ' ';
-              }))
-    ]);
+                  ),
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        controller.text = '';
+                      },
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                      ))),
+            ),
+          ),
+          Visibility(
+              visible: !showSearchBar,
+              maintainState: true,
+              child: ListTile(
+                  title: Text(
+                    pageTitle,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () {
+                    focusNode.requestFocus();
+                    controller.text = controller.text.trimRight() + ' ';
+                  }))
+        ]),
+      // ),
+    );
   }
 }
