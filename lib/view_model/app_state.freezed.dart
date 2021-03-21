@@ -21,6 +21,7 @@ class _$AppStateTearOff {
       String currentUrl = '',
       String initialUrl = "https://www.google.com/",
       String searchKeyword = '',
+      bool isScrollDown = false,
       bool isLongTapToTranslate = false,
       bool isSelectParagraph = false}) {
     return _AppState(
@@ -30,6 +31,7 @@ class _$AppStateTearOff {
       currentUrl: currentUrl,
       initialUrl: initialUrl,
       searchKeyword: searchKeyword,
+      isScrollDown: isScrollDown,
       isLongTapToTranslate: isLongTapToTranslate,
       isSelectParagraph: isSelectParagraph,
     );
@@ -47,7 +49,8 @@ mixin _$AppState {
   String get pageTitle;
   String get currentUrl;
   String get initialUrl;
-  String get searchKeyword; // isFocusedだけappStateに移すとうまく動作しない
+  String get searchKeyword;
+  bool get isScrollDown; // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
   bool get isLongTapToTranslate;
   bool get isSelectParagraph;
@@ -67,6 +70,7 @@ abstract class $AppStateCopyWith<$Res> {
       String currentUrl,
       String initialUrl,
       String searchKeyword,
+      bool isScrollDown,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -87,6 +91,7 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
     Object currentUrl = freezed,
     Object initialUrl = freezed,
     Object searchKeyword = freezed,
+    Object isScrollDown = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -103,6 +108,8 @@ class _$AppStateCopyWithImpl<$Res> implements $AppStateCopyWith<$Res> {
       searchKeyword: searchKeyword == freezed
           ? _value.searchKeyword
           : searchKeyword as String,
+      isScrollDown:
+          isScrollDown == freezed ? _value.isScrollDown : isScrollDown as bool,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -125,6 +132,7 @@ abstract class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
       String currentUrl,
       String initialUrl,
       String searchKeyword,
+      bool isScrollDown,
       bool isLongTapToTranslate,
       bool isSelectParagraph});
 }
@@ -146,6 +154,7 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
     Object currentUrl = freezed,
     Object initialUrl = freezed,
     Object searchKeyword = freezed,
+    Object isScrollDown = freezed,
     Object isLongTapToTranslate = freezed,
     Object isSelectParagraph = freezed,
   }) {
@@ -162,6 +171,8 @@ class __$AppStateCopyWithImpl<$Res> extends _$AppStateCopyWithImpl<$Res>
       searchKeyword: searchKeyword == freezed
           ? _value.searchKeyword
           : searchKeyword as String,
+      isScrollDown:
+          isScrollDown == freezed ? _value.isScrollDown : isScrollDown as bool,
       isLongTapToTranslate: isLongTapToTranslate == freezed
           ? _value.isLongTapToTranslate
           : isLongTapToTranslate as bool,
@@ -181,6 +192,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       this.currentUrl = '',
       this.initialUrl = "https://www.google.com/",
       this.searchKeyword = '',
+      this.isScrollDown = false,
       this.isLongTapToTranslate = false,
       this.isSelectParagraph = false})
       : assert(count != null),
@@ -188,6 +200,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
         assert(currentUrl != null),
         assert(initialUrl != null),
         assert(searchKeyword != null),
+        assert(isScrollDown != null),
         assert(isLongTapToTranslate != null),
         assert(isSelectParagraph != null);
 
@@ -209,6 +222,9 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
   @override
   final String searchKeyword;
   @JsonKey(defaultValue: false)
+  @override
+  final bool isScrollDown;
+  @JsonKey(defaultValue: false)
   @override // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
   final bool isLongTapToTranslate;
@@ -218,7 +234,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'AppState(webView: $webView, count: $count, pageTitle: $pageTitle, currentUrl: $currentUrl, initialUrl: $initialUrl, searchKeyword: $searchKeyword, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
+    return 'AppState(webView: $webView, count: $count, pageTitle: $pageTitle, currentUrl: $currentUrl, initialUrl: $initialUrl, searchKeyword: $searchKeyword, isScrollDown: $isScrollDown, isLongTapToTranslate: $isLongTapToTranslate, isSelectParagraph: $isSelectParagraph)';
   }
 
   @override
@@ -232,6 +248,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       ..add(DiagnosticsProperty('currentUrl', currentUrl))
       ..add(DiagnosticsProperty('initialUrl', initialUrl))
       ..add(DiagnosticsProperty('searchKeyword', searchKeyword))
+      ..add(DiagnosticsProperty('isScrollDown', isScrollDown))
       ..add(DiagnosticsProperty('isLongTapToTranslate', isLongTapToTranslate))
       ..add(DiagnosticsProperty('isSelectParagraph', isSelectParagraph));
   }
@@ -257,6 +274,9 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
             (identical(other.searchKeyword, searchKeyword) ||
                 const DeepCollectionEquality()
                     .equals(other.searchKeyword, searchKeyword)) &&
+            (identical(other.isScrollDown, isScrollDown) ||
+                const DeepCollectionEquality()
+                    .equals(other.isScrollDown, isScrollDown)) &&
             (identical(other.isLongTapToTranslate, isLongTapToTranslate) ||
                 const DeepCollectionEquality().equals(
                     other.isLongTapToTranslate, isLongTapToTranslate)) &&
@@ -274,6 +294,7 @@ class _$_AppState with DiagnosticableTreeMixin implements _AppState {
       const DeepCollectionEquality().hash(currentUrl) ^
       const DeepCollectionEquality().hash(initialUrl) ^
       const DeepCollectionEquality().hash(searchKeyword) ^
+      const DeepCollectionEquality().hash(isScrollDown) ^
       const DeepCollectionEquality().hash(isLongTapToTranslate) ^
       const DeepCollectionEquality().hash(isSelectParagraph);
 
@@ -291,6 +312,7 @@ abstract class _AppState implements AppState {
       String currentUrl,
       String initialUrl,
       String searchKeyword,
+      bool isScrollDown,
       bool isLongTapToTranslate,
       bool isSelectParagraph}) = _$_AppState;
 
@@ -306,6 +328,8 @@ abstract class _AppState implements AppState {
   String get initialUrl;
   @override
   String get searchKeyword;
+  @override
+  bool get isScrollDown;
   @override // isFocusedだけappStateに移すとうまく動作しない
 // @Default(false) bool isFocused,
   bool get isLongTapToTranslate;

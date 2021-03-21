@@ -18,6 +18,7 @@ abstract class AppState with _$AppState {
     @Default('') String currentUrl,
     @Default("https://www.google.com/") String initialUrl,
     @Default('') String searchKeyword,
+    @Default(false) bool isScrollDown,
     // isFocusedだけappStateに移すとうまく動作しない
     // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
