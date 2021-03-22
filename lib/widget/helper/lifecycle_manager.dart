@@ -10,7 +10,7 @@ class LifecycleCallback {
   InAppWebViewController controller;
 
   void onResumed() async {
-    final urls = await extractUrlsFromClipBoard();
+    final urls = await loadUrlsFromClipBoard();
     if (urls.length != 0) {
       showSnackBarJumpUrl(context, controller, urls);
     }

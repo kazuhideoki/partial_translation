@@ -6,8 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/widget/custom_app_bar.dart';
 import 'package:partial_translation/widget/main_web_view.dart';
 import 'package:partial_translation/widget/footer_button_bar.dart';
-import 'package:partial_translation/util/oprinal_gesture_detector.dart';
-import 'package:partial_translation/util/web_view/lifecycle_manager.dart';
+import 'package:partial_translation/widget/helper/oprinal_gesture_detector.dart';
+import 'package:partial_translation/widget/helper/lifecycle_manager.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
 Future main() async {
