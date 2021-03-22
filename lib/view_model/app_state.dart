@@ -18,7 +18,7 @@ abstract class AppState with _$AppState {
     @Default('') String currentUrl,
     @Default("https://www.google.com/") String initialUrl,
     @Default('') String searchKeyword,
-    @Default(false) bool isScrollDown,
+    @Default(false) bool isHideAppBar,
     // isFocusedだけappStateに移すとうまく動作しない
     // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
@@ -73,14 +73,12 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentUrl: url);
   }
 
-  get isHome => state.currentUrl == state.initialUrl;
-
   void setSearchKeyword(String value) {
     state = state.copyWith(currentUrl: value);
   }
 
-  void setIsScrollDown(bool value) {
-    state = state.copyWith(isScrollDown: value);
+  void setIsHideAppBar(bool value) {
+    state = state.copyWith(isHideAppBar: value);
   }
 
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる
