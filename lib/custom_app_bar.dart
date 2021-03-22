@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/util/const.dart';
 import 'package:partial_translation/util/search_on_google.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
@@ -23,36 +24,40 @@ class CustomAppBar extends HookWidget {
     final isHome = useProvider(appStateProvider).isHome;
     final showSearchBar = isFocused || isHome;
 
-    return Column(children: [
-      Visibility(
-        visible: showSearchBar,
-        maintainState: true,
-        child: TextField(
-          controller: controller,
-          focusNode: focusNode,
-          onSubmitted: (rawText) {
-            searchOnGoogle(rawText, webView);
-          },
-          style: TextStyle(fontSize: 18),
-          decoration: InputDecoration(
-              hintText: isFocused ? null : "Search",
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-              suffixIcon: FlatButton(
-                  onPressed: () {
-                    controller.text = '';
-                  },
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ))),
+    return Container(
+      color: Colors.blue,
+      height: appBarHeight,
+      child: Column(children: [
+        Visibility(
+          visible: showSearchBar,
+          maintainState: true,
+          child: TextField(
+            controller: controller,
+            focusNode: focusNode,
+            onSubmitted: (rawText) {
+              searchOnGoogle(rawText, webView);
+            },
+            style: TextStyle(fontSize: 18),
+            decoration: InputDecoration(
+                hintText: isFocused ? null : "Search",
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      controller?.text = '';
+                    },
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ))),
+          ),
         ),
-      ),
-      Visibility(
+        Visibility(
           visible: !showSearchBar,
           maintainState: true,
+
           child: ListTile(
               title: Text(
                 pageTitle,
@@ -60,8 +65,11 @@ class CustomAppBar extends HookWidget {
               ),
               onTap: () {
                 focusNode.requestFocus();
-                controller.text = controller.text.trimRight() + ' ';
-              }))
-    ]);
+                controller?.text = controller?.text.trimRight() + ' ';
+              }),
+        ),
+        
+      ]),
+    );
   }
 }
