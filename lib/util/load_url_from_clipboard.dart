@@ -9,7 +9,6 @@ Future<List<String>> extractUrlsFromClipBoard() async {
   final regExp =
       RegExp(r"^https?://[\w!?/+\-_~;.,*&@#$%()'[\]]+", multiLine: true);
   var texts = textData.split(' ');
-  print('lllllllllllll $texts');
   texts = texts
       .map((text) => text.split('\n'))
       .expand((i) => i)
