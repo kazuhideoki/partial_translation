@@ -21,15 +21,14 @@ class CustomAppBar extends HookWidget {
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
     final pageTitle = useProvider(appStateProvider.state).pageTitle;
-    final isHome = useProvider(appStateProvider).isHome;
-    final showSearchBar = isFocused || isHome;
+    final setIsHideAppBar = useProvider(appStateProvider).setIsHideAppBar;
 
     return Container(
       color: Colors.blue,
       height: appBarHeight,
       child: Column(children: [
         Visibility(
-          visible: showSearchBar,
+          visible: isFocused,
           maintainState: true,
           child: TextField(
             controller: controller,
@@ -55,7 +54,7 @@ class CustomAppBar extends HookWidget {
           ),
         ),
         Visibility(
-          visible: !showSearchBar,
+          visible: !isFocused,
           maintainState: true,
 
           child: ListTile(
@@ -63,12 +62,15 @@ class CustomAppBar extends HookWidget {
                 pageTitle,
                 overflow: TextOverflow.ellipsis,
               ),
+              trailing: IconButton(
+                icon: Icon(Icons.visibility_off),
+                onPressed: () => setIsHideAppBar(true),
+              ),
               onTap: () {
                 focusNode.requestFocus();
                 controller?.text = controller?.text.trimRight() + ' ';
               }),
         ),
-        
       ]),
     );
   }

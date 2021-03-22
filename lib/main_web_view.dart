@@ -21,7 +21,7 @@ class MainWebView extends HookWidget {
     final isLongTapToTranslate =
         useProvider(appStateProvider.state).isLongTapToTranslate;
     final initialUrl = useProvider(appStateProvider.state).initialUrl;
-    final setIsScrollDown = useProvider(appStateProvider).setIsScrollDown;
+    final setIsHideAppBar = useProvider(appStateProvider).setIsHideAppBar;
 
     return InAppWebView(
       initialUrl: initialUrl,
@@ -70,9 +70,9 @@ class MainWebView extends HookWidget {
           final secondPosition = await controller.getScrollY();
 
           if (secondPosition > firstPosition) {
-            setIsScrollDown(true);
+            setIsHideAppBar(true);
           } else if (secondPosition < firstPosition) {
-            setIsScrollDown(false);
+            setIsHideAppBar(false);
           }
         });
       },

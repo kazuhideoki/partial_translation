@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:partial_translation/copied_url_suggested_list.dart';
 import 'package:partial_translation/custom_app_bar.dart';
 import 'package:partial_translation/main_web_view.dart';
 import 'package:partial_translation/footer_button_bar.dart';
@@ -25,7 +24,7 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final webView = useProvider(appStateProvider.state).webView;
-    final isScrollDown = useProvider(appStateProvider.state).isScrollDown;
+    final isHideAppBar = useProvider(appStateProvider.state).isHideAppBar;
     final _controller = useTextEditingController();
     final _focusNode = useFocusNode();
     final _isFocused = useState(false);
@@ -70,7 +69,7 @@ class MyApp extends HookWidget {
                   ),
                 ]))),
             Visibility(
-                visible: !isScrollDown,
+                visible: !isHideAppBar,
                 maintainState: false,
                 child: ListView(
                   shrinkWrap: true,
@@ -87,7 +86,7 @@ class MyApp extends HookWidget {
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Visibility(
-                    visible: !isScrollDown,
+                    visible: !isHideAppBar,
                     maintainState: false,
                     child: FooterButtonBar())),
           ]));
