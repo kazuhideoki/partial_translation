@@ -71,15 +71,13 @@ class MainWebView extends HookWidget {
         progress = newProgress / 100;
       },
       onScrollChanged: (InAppWebViewController controller, int x, int y) async {
-          final firstPosition = await controller.getScrollY();
+        final firstPosition = await controller.getScrollY();
         Future.delayed(Duration(milliseconds: 100), () async {
           final secondPosition = await controller.getScrollY();
 
-          // if (position > y) {
           if (secondPosition > firstPosition) {
             print('down');
             setIsScrollDown(true);
-          // } else if (position < y) {
           } else if (secondPosition < firstPosition) {
             print('up');
             setIsScrollDown(false);

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:partial_translation/copied_url_suggested_list.dart';
 import 'package:partial_translation/custom_app_bar.dart';
 import 'package:partial_translation/main_web_view.dart';
+import 'package:partial_translation/util/const.dart';
 import 'package:partial_translation/util/load_url_from_clipboard.dart';
 import 'package:partial_translation/footer_button_bar.dart';
 import 'package:partial_translation/util/oprinal_gesture_detector.dart';
@@ -40,84 +42,64 @@ class MyApp extends HookWidget {
 
     final progress = useState(0.0 as double);
 
+    print( 'ーーーーーーーーーーー ${_isFocused.value && !isScrollDown}');
+
     return Scaffold(
-        // extendBodyBehindAppBar: true,
-        // appBar: AppBar(
-        //   backgroundColor: Colors.transparent,
-        //   title: CustomAppBar(
-        //       controller: _controller,
-        //       focusNode: _focusNode,
-        //       isFocused: _isFocused.value),
-        // ),
         body: SafeArea(child: Builder(builder: (BuildContext context) {
-          // iosでうまくunFocusさせるためのGestureDetector
-          return Stack(children: [
-            // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
-            OptionalGestureDetector(
-                focusNode: _focusNode,
-                isFocused: _isFocused.value,
+      // iosでうまくunFocusさせるためのGestureDetector
+      return Stack(children: [
+        // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
+        OptionalGestureDetector(
+            focusNode: _focusNode,
+            isFocused: _isFocused.value,
+            child: Container(
+                child: Column(children: <Widget>[
+              Container(
+                  child: progress.value < 1.0
+                      ? LinearProgressIndicator(value: progress.value)
+                      : Container()),
+              Expanded(
                 child: Container(
-                    child: Column(children: <Widget>[
-                  Container(
-                      child: progress.value < 1.0
-                          ? LinearProgressIndicator(value: progress.value)
-                          : Container()),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueAccent)),
-                      child: MainWebView(
-                        progress: progress.value,
-                      ),
-                    ),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueAccent)),
+                  child: MainWebView(
+                    progress: progress.value,
                   ),
-                  // FooterButtonBar()
-                  // Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar()),
-                ]))),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Visibility(
-                  visible: !isScrollDown,
-                  maintainState: false,
+                ),
+              ),
+              // FooterButtonBar()
+              // Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar()),
+            ]))),
+        Visibility(
+            visible: !isScrollDown,
+            maintainState: false,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
                   child: CustomAppBar(
                       controller: _controller,
                       focusNode: _focusNode,
-                      isFocused: _isFocused.value)),
-            ),
-            Align(alignment: Alignment.bottomCenter, child: Visibility(visible: !isScrollDown, maintainState: false, child: FooterButtonBar())),
-            // Align(alignment: Alignment.bottomCenter, child: FooterButtonBar()),
-            FutureBuilder(
-              future: extractUrlsFromClipBoard(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.connectionState != ConnectionState.done ||
-                    !snapshot.hasData ||
-                    snapshot.data.length == 0)
-                  return Visibility(
-                      visible: false, maintainState: false, child: Text(''));
-                final encodedUrls = Uri.encodeFull(snapshot.data[0]);
-                return Visibility(
-                    visible: _isFocused.value,
+                      isFocused: _isFocused.value),
+                ),
+                Visibility(
+                    visible: _isFocused.value && !isScrollDown,
                     maintainState: false,
-                    child: Container(
-                        height: 80,
-                        width: double.infinity,
-                        child: ListView(children: [
-                          SizedBox(
-                              child: ListTile(
-                            leading: Icon(Icons.content_paste),
-                            title: Text('From URL on Clipboard'),
-                            subtitle: Text(snapshot.data[0]),
-                            tileColor: Colors.white,
-                            onTap: () {
-                              webView.loadUrl(url: encodedUrls);
-                              _focusNode.unfocus();
-                              _controller.text = '';
-                            },
-                          ))
-                        ])));
-              },
-            ),
-          ]);
-        })));
+                    child: CopiedUrlSuggestedList(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      isFocused: _isFocused.value,
+                    )),
+              ],
+            )),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Visibility(
+                visible: !isScrollDown,
+                maintainState: false,
+                child: FooterButtonBar())),
+      ]);
+    })));
   }
 }
