@@ -44,11 +44,11 @@ class MyApp extends HookWidget {
         body: SafeArea(child: Builder(builder: (BuildContext context) {
       final _lifecycleCallback =
           LifecycleCallback(context: context, controller: webView);
-      // iosでうまくunFocusさせるためのGestureDetector
+      // resumeしたときの処理などをラップしている
       return LifecycleManager(
           callback: _lifecycleCallback,
           child: Stack(children: [
-            // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
+            // iosでうまくunFocusさせるためのGestureDetector
             OptionalGestureDetector(
                 focusNode: _focusNode,
                 isFocused: _isFocused.value,
@@ -68,20 +68,15 @@ class MyApp extends HookWidget {
                     ),
                   ),
                 ]))),
-            Visibility(
-                visible: !isHideAppBar,
-                maintainState: false,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: CustomAppBar(
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          isFocused: _isFocused.value),
-                    ),
-                  ],
+            Align(
+                alignment: Alignment.topCenter,
+                child: Visibility(
+                  visible: !isHideAppBar,
+                  maintainState: false,
+                  child: CustomAppBar(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      isFocused: _isFocused.value),
                 )),
             Align(
                 alignment: Alignment.bottomCenter,
