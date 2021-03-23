@@ -7,7 +7,6 @@ var targetEvent;
 window.addEventListener(
   "touchstart",
   (e) => {
-    console.log("touchstart");
     isMoved = false;
     targetEvent = e;
   },
@@ -17,7 +16,6 @@ window.addEventListener(
 window.addEventListener(
   "touchmove",
   () => {
-    console.log("touchmove");
     isMoved = true;
   },
   true
@@ -26,15 +24,12 @@ window.addEventListener(
 window.addEventListener("touchend", selectParagraph, true);
 
 function selectParagraph(e) {
-  console.log("touchend");
   let isSelectParagraph = window.localStorage.getItem("isSelectParagraph");
   if (isSelectParagraph === "true") {
     isSelectParagraph = true;
   } else if (isSelectParagraph === "false") {
     isSelectParagraph = false;
   }
-
-  console.log(`isMovedは ${isMoved}`);
 
   if (isSelectParagraph && isMoved === false) {
     try {
