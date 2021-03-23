@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-Future<List<String>> extractUrlsFromClipBoard() async {
+Future<List<String>> loadUrlsFromClipBoard() async {
   String textData =
-      await Clipboard.getData('text/plain').then((value) => value.text);
+      await Clipboard.getData('text/plain').then((value) => value?.text);
+  if (textData == null) return [];
   final regExp =
       RegExp(r"^https?://[\w!?/+\-_~;.,*&@#$%()'[\]]+", multiLine: true);
   var texts = textData.split(' ');
@@ -25,7 +26,7 @@ void showSnackBarJumpUrl(BuildContext context,
       action: SnackBarAction(
         label: 'Go!',
         onPressed: () {
-            controller.loadUrl(url: encodedUrls);
+          controller.loadUrl(url: encodedUrls);
         },
       ),
     );

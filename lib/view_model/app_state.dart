@@ -1,6 +1,7 @@
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:partial_translation/net/connect_local_storage.dart';
+import 'package:partial_translation/view_model/method/count_method.dart';
 import 'package:partial_translation/view_model/method/partial_translate_method.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -18,6 +19,7 @@ abstract class AppState with _$AppState {
     @Default('') String currentUrl,
     @Default("https://www.google.com/") String initialUrl,
     @Default('') String searchKeyword,
+    @Default(false) bool isHideAppBar,
     // isFocusedだけappStateに移すとうまく動作しない
     // @Default(false) bool isFocused,
     @Default(false) bool isLongTapToTranslate,
@@ -35,33 +37,18 @@ class AppStateNotifier extends StateNotifier<AppState> {
   }
 
   Future<int> getCount() async {
-    final webView = state.webView;
-    try {
-      var count = await ConnectLocalStorage(webView).getCount();
-      if (count == null) {
-        await setCount(0);
-        return 0;
-      }
-      state = state.copyWith(count: count);
-      return count;
-    } catch (err) {
-      print('AppStateNotifier.getCount: 【error】 $err');
-    }
+    final count = await getCountMethod(state.webView);
+    state = state.copyWith(count: count);
+    return count;
   }
 
   Future<void> setCount(int count) async {
-    final webView = state.webView;
-    try {
-      await ConnectLocalStorage(webView).setCount(count);
-      state = state.copyWith(count: count);
-    } catch (err) {
-      print('AppStateNotifier.setCount: 【error】 $err');
-    }
+    await setCountMethod(state.webView, count);
+    state = state.copyWith(count: count);
   }
 
   void partialTranslate() async {
-    final webView = state.webView;
-    partialTranslateMethod(webView, getCount, setCount);
+    partialTranslateMethod(state.webView, getCount, setCount);
   }
 
   void setPageTitle(String value) {
@@ -72,10 +59,12 @@ class AppStateNotifier extends StateNotifier<AppState> {
     state = state.copyWith(currentUrl: url);
   }
 
-  get isHome => state.currentUrl == state.initialUrl;
-
   void setSearchKeyword(String value) {
     state = state.copyWith(currentUrl: value);
+  }
+
+  void setIsHideAppBar(bool value) {
+    state = state.copyWith(isHideAppBar: value);
   }
 
   // JSからtranslateByLongTapを呼ぶことで「選択→離す」を感知し、翻訳させる

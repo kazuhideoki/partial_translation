@@ -29,7 +29,7 @@ dependencies:
   freezed_annotation:
   json_serializable:
   flutter_dotenv: 3.1.0
-  dio:
+  dio: 3.0.10
   translator: 0.1.5
   process_run: 0.11.2+8
   googleapis:

@@ -20,32 +20,28 @@ class FooterButtonBar extends HookWidget {
     final switchSelectParagraph =
         useProvider(appStateProvider).switchSelectParagraph;
     return Container(
+      color: Colors.white,
       child: ButtonBar(
+        
         alignment: MainAxisAlignment.center,
         children: <Widget>[
           IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              if (webView != null) {
                 webView.goBack();
-              }
             },
           ),
           
           IconButton(
             icon: Icon(Icons.arrow_forward),
             onPressed: () {
-              if (webView != null) {
                 webView.goForward();
-              }
             },
           ),
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              if (webView != null) {
                 webView.reload();
-              }
             },
           ),
           IconButton(
