@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:partial_translation/custom_app_bar.dart';
-import 'package:partial_translation/main_web_view.dart';
-import 'package:partial_translation/footer_button_bar.dart';
-import 'package:partial_translation/util/oprinal_gesture_detector.dart';
-import 'package:partial_translation/util/web_view/lifecycle_manager.dart';
+import 'package:partial_translation/widget/custom_app_bar.dart';
+import 'package:partial_translation/widget/main_web_view.dart';
+import 'package:partial_translation/widget/footer_button_bar.dart';
+import 'package:partial_translation/widget/helper/oprinal_gesture_detector.dart';
+import 'package:partial_translation/widget/helper/lifecycle_manager.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 
 Future main() async {
@@ -44,11 +44,11 @@ class MyApp extends HookWidget {
         body: SafeArea(child: Builder(builder: (BuildContext context) {
       final _lifecycleCallback =
           LifecycleCallback(context: context, controller: webView);
-      // iosでうまくunFocusさせるためのGestureDetector
+      // resumeしたときの処理などをラップしている
       return LifecycleManager(
           callback: _lifecycleCallback,
           child: Stack(children: [
-            // android実機で選択ができなくなってしまったので、focusあたってないときはGestureDetectorをオフにして回避
+            // iosでうまくunFocusさせるためのGestureDetector
             OptionalGestureDetector(
                 focusNode: _focusNode,
                 isFocused: _isFocused.value,
@@ -68,20 +68,15 @@ class MyApp extends HookWidget {
                     ),
                   ),
                 ]))),
-            Visibility(
-                visible: !isHideAppBar,
-                maintainState: false,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: CustomAppBar(
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          isFocused: _isFocused.value),
-                    ),
-                  ],
+            Align(
+                alignment: Alignment.topCenter,
+                child: Visibility(
+                  visible: !isHideAppBar,
+                  maintainState: false,
+                  child: CustomAppBar(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      isFocused: _isFocused.value),
                 )),
             Align(
                 alignment: Alignment.bottomCenter,

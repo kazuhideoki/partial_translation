@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:partial_translation/util/const.dart';
+import 'package:partial_translation/constants/const.dart';
 import 'package:partial_translation/util/search_on_google.dart';
 import 'package:partial_translation/view_model/app_state.dart';
 

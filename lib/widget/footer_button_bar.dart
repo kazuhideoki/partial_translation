@@ -28,26 +28,20 @@ class FooterButtonBar extends HookWidget {
           IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              if (webView != null) {
                 webView.goBack();
-              }
             },
           ),
           
           IconButton(
             icon: Icon(Icons.arrow_forward),
             onPressed: () {
-              if (webView != null) {
                 webView.goForward();
-              }
             },
           ),
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              if (webView != null) {
                 webView.reload();
-              }
             },
           ),
           IconButton(
